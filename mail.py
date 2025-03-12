@@ -12,7 +12,7 @@ password = st.text_input("Contraseña:", placeholder="••••••••",
 if st.button("📩 Consultar Correos"):
     try:
         # Conectar al servidor IMAP de HostGator
-        mail = imaplib.IMAP4_SSL("mail.tu-dominio.com")  # Cambia por tu dominio
+        mail = imaplib.IMAP4_SSL("mail.datatobe.com")  # Cambia por tu dominio
         mail.login(user, password)
         mail.select("inbox")
 
