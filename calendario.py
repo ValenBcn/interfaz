@@ -41,14 +41,14 @@ st.markdown(
             padding: 20px;
         }
 
-        /* Contenedor de filtros con menos espacio */
+        /* Contenedor de filtros mejor distribuido */
         .filters-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
             justify-content: space-between;
-            padding: 10px;
+            gap: 10px;
             background: #f8f9fa;
+            padding: 15px;
             border-radius: 8px;
             margin-bottom: 10px;
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
@@ -58,35 +58,20 @@ st.markdown(
         div[data-testid="stWidgetLabel"] label {
             color: black !important;
             font-weight: bold;
-        }
-
-        /* Ajustar el color del texto de los días festivos */
-        .holidays-container {
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 8px;
-            margin-top: 5px;
-        }
-
-        .holidays-title {
             font-size: 16px;
-            font-weight: bold;
-            color: black !important;
-            text-align: center;
-            margin-bottom: 5px;
         }
 
-        .holiday-item {
+        /* Mejor distribución de los selectores */
+        .filters-container select {
+            width: 100% !important;
+            height: 40px;
             font-size: 14px;
-            color: black !important;
-            padding: 3px 0;
         }
 
-        /* Ajustar el tamaño del calendario */
+        /* Calendario mejorado */
         .calendar-table {
             border-collapse: collapse;
             width: 100%;
-            margin-top: 5px;
             font-size: 16px;
             color: black !important;
         }
@@ -117,7 +102,29 @@ st.markdown(
             color: black !important;
         }
 
-        /* Ajustar el tamaño del calendario en móviles */
+        /* Contenedor de días festivos */
+        .holidays-container {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .holidays-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: black !important;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .holiday-item {
+            font-size: 14px;
+            color: black !important;
+            padding: 3px 0;
+        }
+
+        /* Ajuste del tamaño del calendario en móviles */
         @media (max-width: 768px) {
             .filters-container {
                 flex-direction: column;
