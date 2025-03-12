@@ -41,11 +41,10 @@ st.markdown(
             padding: 20px;
         }
 
-        /* Contenedor de filtros mejor alineado */
+        /* Contenedor de filtros alineado en dos filas */
         .filters-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
             padding: 10px;
             background: #f8f9fa;
@@ -74,17 +73,27 @@ st.markdown(
             width: 100%;
             margin-top: 10px;
             font-size: 16px;
+            color: black !important; /* Asegurar que los números sean negros */
         }
 
         .calendar-table th, .calendar-table td {
             border: 1px solid #ccc;
             text-align: center;
             padding: 10px;
+            color: black !important;
         }
 
         .calendar-table th {
             background-color: #3B81F6;
             color: white;
+        }
+
+        .calendar-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: black !important;
+            text-align: center;
+            margin-bottom: 10px;
         }
 
         .holiday {
@@ -96,6 +105,7 @@ st.markdown(
         /* Ajustar el tamaño del calendario en móviles */
         @media (max-width: 768px) {
             .filters-container {
+                display: flex;
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -113,16 +123,14 @@ st.markdown(
 # **📌 Contenedor para los filtros**
 st.markdown('<div class="filters-container">', unsafe_allow_html=True)
 
-col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-
-# Selectores mejor alineados
+# Selectores alineados en 2 filas (2 por fila)
+col1, col2 = st.columns(2)
 with col1:
     country = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
+    selected_year = st.selectbox("📅 Año", list(range(current_year, current_year + 5)), index=0)
+
 with col2:
     city = st.selectbox("🏙️ Ciudad", CITIES[country], index=0)
-with col3:
-    selected_year = st.selectbox("📅 Año", list(range(current_year, current_year + 5)), index=0)
-with col4:
     selected_month = st.selectbox("📆 Mes", list(calendar.month_name[1:]), index=current_month - 1)
 
 st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor de los filtros
@@ -140,7 +148,7 @@ holidays_by_month = [
 ]
 
 # **📅 Mostrar el calendario**
-st.markdown(f"### 📅 {selected_month} - {selected_year}")
+st.markdown(f'<div class="calendar-title">📅 {selected_month} - {selected_year}</div>', unsafe_allow_html=True)
 
 # Obtener la estructura del mes
 month_calendar = calendar.monthcalendar(selected_year, list(calendar.month_name[1:]).index(selected_month) + 1)
