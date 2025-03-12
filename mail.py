@@ -2,14 +2,12 @@ import streamlit as st
 
 st.title("📧 Accede a tu Correo Empresarial")
 
-# Input para ingresar el correo (solo para prellenar, no se almacena)
-email_user = st.text_input("Correo electrónico", placeholder="correo@tu-dominio.com")
+email_user = st.text_input("Correo electrónico", placeholder="usuario@tu-dominio.com")
 
-# URL de Webmail en HostGator (ajústala según tu dominio)
-webmail_url = "https://webmail.datatobe.com/"  
+# URL de Webmail
+webmail_url = "https://webmail.datatobe.com/"
 
-# Verifica si el usuario ingresó un correo antes de mostrar Webmail
-if email_user:
-    st.markdown(f"""
-        <iframe src="{webmail_url}" width="100%" height="600px" style="border:none;"></iframe>
-    """, unsafe_allow_html=True)
+st.markdown(
+    f'<a href="{webmail_url}" target="_blank"><button style="background-color:#3B81F6; color:white; padding:10px 15px; border:none; border-radius:5px; cursor:pointer;">📩 Abrir Webmail</button></a>',
+    unsafe_allow_html=True
+)
