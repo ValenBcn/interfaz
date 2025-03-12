@@ -31,27 +31,28 @@ def main():
         <style>
             .weather-container {
                 max-width: 100%;
-                background: linear-gradient(90deg, #4A90E2, #357ABD);
+                background: #3B81F6;
                 color: white;
-                padding: 20px;
-                border-radius: 12px;
-                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
                 text-align: center;
                 font-family: 'Arial', sans-serif;
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 15px;
+                gap: 10px;
             }
             .weather-item {
                 display: flex;
                 align-items: center;
                 gap: 10px;
-                background: rgba(255, 255, 255, 0.15);
-                padding: 12px;
+                background: #4C8BF5;
+                padding: 10px;
                 border-radius: 8px;
                 font-size: 16px;
                 font-weight: bold;
+                color: white;
             }
             .weather-icon {
                 font-size: 20px;
@@ -78,4 +79,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
