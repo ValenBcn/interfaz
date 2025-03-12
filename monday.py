@@ -1,143 +1,127 @@
-<div class="task-container">
-    <h2>📋 Tareas en <span id="board-name">Cargando...</span></h2>
-    <div id="tasks-list">Cargando tareas...</div>
-</div>
+import streamlit as st
+import requests
+import json
 
-<script>
-    const API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ4NDExMTkyNCwiYWFpIjoxMSwidWlkIjo3MzMxMDUyOCwiaWFkIjoiMjAyNS0wMy0xMVQxNzo1NToyNS4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6Mjg0ODc4MzgsInJnbiI6ImV1YzEifQ.Pp_UNPi-wRC1Y9yxFEQ_Rs9VC2J78QLjK58x7puQBAM";
-    const BOARD_ID = "1863450371"; // ID del board "HR"
-    const API_URL = "https://api.monday.com/v2";
+# Configuración de la API
+API_KEY = "TU_API_KEY"  # Reemplaza con tu clave
+BOARD_ID = "1863450371"  # ID del tablero HR
+API_URL = "https://api.monday.com/v2"
 
-    async function getTasks() {
-        const query = `{
-            boards(ids: ${BOARD_ID}) {
-                name
-                items_page {
-                    items {
-                        id
-                        name
-                        column_values {
-                            id
-                            value
-                        }
-                    }
-                }
-            }
-        }`;
-
-        try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": API_KEY
-                },
-                body: JSON.stringify({ query })
-            });
-
-            const data = await response.json();
-            const board = data.data.boards[0];
-            document.getElementById("board-name").textContent = board.name;
-
-            const tasks = board.items_page.items;
-            const tasksList = document.getElementById("tasks-list");
-            tasksList.innerHTML = "";
-
-            if (tasks.length === 0) {
-                tasksList.innerHTML = "<div class='task-item'>No hay tareas disponibles 📌</div>";
-                return;
-            }
-
-            tasks.forEach(task => {
-                let startDate = "No definido";
-                let dueDate = "No definido";
-                let status = "No definido";
-                let priority = "No definido";
-                let notes = "No definido";
-
-                task.column_values.forEach(col => {
-                    if (col.id === "project_timeline" && col.value) {
-                        const timeline = JSON.parse(col.value);
-                        startDate = timeline.from || "No definido";
-                        dueDate = timeline.to || "No definido";
-                    }
-                    if (col.id === "project_status" && col.value) {
-                        status = JSON.parse(col.value).index || "No definido";
-                    }
-                    if (col.id === "priority_1" && col.value) {
-                        priority = JSON.parse(col.value).index || "No definido";
-                    }
-                    if (col.id === "text9" && col.value) {
-                        notes = col.value.replace(/"/g, "") || "No definido";
-                    }
-                });
-
-                const taskElement = `
-                    <div class="task-item">
-                        <h3>${task.name}</h3>
-                        <p>📅 <strong>Inicio:</strong> ${startDate} | ⏳ <strong>Vencimiento:</strong> ${dueDate}</p>
-                        <p>🔴 <strong>Estado:</strong> ${status} | ⭐ <strong>Prioridad:</strong> ${priority}</p>
-                        <p>📄 <strong>Notas:</strong> ${notes}</p>
-                    </div>
-                `;
-                tasksList.innerHTML += taskElement;
-            });
-
-        } catch (error) {
-            console.error("Error obteniendo tareas:", error);
-            document.getElementById("tasks-list").innerHTML = "<div class='task-item error'>Error al cargar tareas ❌</div>";
+# Consulta GraphQL corregida
+query = """
+{
+  boards(ids: %s) {
+    name
+    items_page {
+      items {
+        id
+        name
+        column_values {
+          id
+          value
         }
+      }
     }
+  }
+}
+""" % BOARD_ID
 
-    getTasks();
-</script>
+# Headers para la autenticación
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": API_KEY
+}
 
-<style>
-    .task-container {
-        background: #2B6CB0; /* Azul intenso */
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        max-width: 90%;
-        margin: auto;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+# Llamada a la API
+response = requests.post(API_URL, json={"query": query}, headers=headers)
+data = response.json()
+
+# Si hay errores, mostramos el JSON completo para depuración
+if "errors" in data:
+    st.error("❌ Error al obtener datos de Monday.com")
+    st.json(data)
+    st.stop()
+
+# Obtener el nombre del board y las tareas
+board_name = data["data"]["boards"][0]["name"]
+tasks = data["data"]["boards"][0]["items_page"]["items"]
+
+# ✅ Aplicando estilos
+st.markdown(
+    f"""
+    <style>
+        .main-container {{
+            background-color: #2B6CB0;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 90%;
+            margin: auto;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }}
+        .task-item {{
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: left;
+        }}
+        .task-title {{
+            font-size: 18px;
+            font-weight: bold;
+        }}
+        .task-detail {{
+            font-size: 14px;
+            margin: 5px 0;
+        }}
+        .task-container {{
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #1E4A7B;
+            margin-bottom: 10px;
+            color: white;
+        }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(f'<div class="main-container"><h2>📋 Tareas en **{board_name}**</h2></div>', unsafe_allow_html=True)
+
+for task in tasks:
+    task_name = task["name"]
+    columns = {col["id"]: json.loads(col["value"]) if col["value"] else None for col in task["column_values"]}
+
+    # Extraer valores
+    start_date = columns.get("project_timeline", {}).get("from", "No definido")
+    due_date = columns.get("project_timeline", {}).get("to", "No definido")
+    status = columns.get("project_status", {}).get("index", "No definido")
+    priority = columns.get("priority_1", {}).get("index", "No definido")
+    notes = columns.get("text9", "No definido")
+
+    # Mapear el índice del estado a nombres reales
+    status_mapping = {
+        0: "No iniciado",
+        1: "Listo",
+        2: "Detenido"
     }
+    status_text = status_mapping.get(status, "Desconocido")
 
-    h2 {
-        font-size: 22px;
-        margin-bottom: 15px;
-        font-weight: bold;
+    # Mapear el índice de prioridad a nombres reales
+    priority_mapping = {
+        7: "Baja",
+        109: "Media",
+        110: "Alta"
     }
+    priority_text = priority_mapping.get(priority, "Desconocida")
 
-    .task-item {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 15px;
-        border-radius: 8px;
-        margin: 10px 0;
-        text-align: left;
-    }
-
-    .task-item h3 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .task-item p {
-        margin: 5px 0;
-        font-size: 14px;
-    }
-
-    .task-item.error {
-        background: #ff4d4d;
-        color: white;
-        font-weight: bold;
-    }
-
-    @media (max-width: 768px) {
-        .task-container {
-            max-width: 100%;
-        }
-    }
-</style>
+    # Mostrar en formato visualmente atractivo
+    st.markdown(f"""
+    <div class="task-container">
+        <h3 class="task-title">📝 {task_name}</h3>
+        <p class="task-detail">📅 <strong>Inicio:</strong> {start_date} | ⏳ <strong>Vencimiento:</strong> {due_date}</p>
+        <p class="task-detail">🔴 <strong>Estado:</strong> {status_text} | ⭐ <strong>Prioridad:</strong> {priority_text}</p>
+        <p class="task-detail">📄 <strong>Notas:</strong> {notes if notes else "No definido"}</p>
+    </div>
+    """, unsafe_allow_html=True)
