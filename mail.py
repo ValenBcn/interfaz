@@ -19,6 +19,7 @@ st.markdown(
     /* Cambiar color de los labels de los inputs */
     .stTextInput label {
         color: black !important; /* Texto en negro */
+        background-color: white !important; /* Fondo blanco */
     }
 
     /* Contenedor principal */
@@ -96,7 +97,7 @@ st.markdown(
 IMAP_SERVER = "mail.datatobe.com"  # Servidor IMAP
 IMAP_PORT = 993  # Puerto SSL seguro
 
-st.title("📧 Bandeja de Entrada")
+#st.title("📧 Bandeja de Entrada")
 
 # Variables de sesión
 if "logged_in" not in st.session_state:
