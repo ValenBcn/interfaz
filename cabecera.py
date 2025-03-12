@@ -65,7 +65,7 @@ def main():
     
     with col2:
         lang_selected = st.selectbox("🌍 Idioma / Language:", list(lang_options.keys()))
-    
+
     lang = lang_options[lang_selected]
     season = get_season(now.month, lang)
     weather_description = get_weather_description(forecast_code, lang)
@@ -105,9 +105,26 @@ def main():
                     margin: auto;
                     text-align: center;
                 }}
+                
+                /* Fondo del selectbox en azul tenue */
+                div[data-testid="stSelectbox"] {{
+                    background-color: #DCE8FF !important;
+                    border-radius: 8px;
+                }}
+
+                /* Texto del label del selectbox en negro */
                 .stSelectbox label {{
                     color: black !important; /* Texto del label en negro */
-                }} 
+                    font-weight: bold;
+                }}
+
+                /* Texto dentro del selectbox en negro */
+                div[data-testid="stSelectbox"] select {{
+                    color: black !important;
+                    font-size: 14px;
+                    padding: 10px;
+                }}
+
                 @media (max-width: 600px) {{
                     .weather-container {{
                         font-size: 14px;
