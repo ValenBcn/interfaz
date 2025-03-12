@@ -53,15 +53,21 @@ st.markdown(
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Ajustar el color del texto de los títulos de los selectores */
+        .filters-container label {
+            color: black !important;  
+            font-weight: bold;
+        }
+        
         /* Ajuste del ancho de los selectores */
         .filters-container select {
-            width: 100px !important;  /* Cambia el valor para ajustar */
+            width: 150px !important;  /* Cambia el valor para ajustar */
             height: 36px;
             font-size: 14px;
         }
 
         .stSelectbox {
-            width: 100px !important;  /* Cambia el valor para ajustar */
+            width: 150px !important;  /* Cambia el valor para ajustar */
         }
 
         /* Mejor distribución entre filtros y calendario */
