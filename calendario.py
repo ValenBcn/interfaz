@@ -45,44 +45,44 @@ st.markdown(
         .filters-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            padding: 5px;
+            gap: 15px;
+            justify-content: space-between;
+            padding: 10px;
             background: #f8f9fa;
             border-radius: 8px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
         }
+
         /* Asegurar que los títulos de los selectores sean negros */
         div[data-testid="stWidgetLabel"] label {
-            color: black !important;  /* Forzar color negro */
-            font-weight: bold;  /* Hacer que el texto sea más visible */
-        }
-
-        /* Ajustar el color del texto de los títulos de los selectores */
-        .filters-container label {
-            color: black !important;  
+            color: black !important;
             font-weight: bold;
         }
-        
-        /* Ajuste del ancho de los selectores */
-        .filters-container select {
-            width: 120px !important;  /* Cambia el valor para ajustar */
-            height: 36px;
+
+        /* Ajustar el color del texto de los días festivos */
+        .holidays-container {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .holidays-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: black !important;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .holiday-item {
             font-size: 14px;
+            color: black !important;
+            padding: 3px 0;
         }
 
-        .stSelectbox {
-            width: 120px !important;  /* Cambia el valor para ajustar */
-        }
-
-        /* Mejor distribución entre filtros y calendario */
-        .calendar-section {
-            display: grid;
-            grid-template-rows: auto 1fr;
-            gap: 5px;
-        }
-
-        /* Calendario mejorado */
+        /* Ajustar el tamaño del calendario */
         .calendar-table {
             border-collapse: collapse;
             width: 100%;
@@ -117,32 +117,9 @@ st.markdown(
             color: black !important;
         }
 
-        /* Ajuste del contenedor de días festivos */
-        .holidays-container {
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 8px;
-            margin-top: 5px;
-        }
-
-        .holidays-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: black !important;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-
-        .holiday-item {
-            font-size: 14px;
-            color: black !important;
-            padding: 3px 0;
-        }
-
         /* Ajustar el tamaño del calendario en móviles */
         @media (max-width: 768px) {
             .filters-container {
-                display: flex;
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -151,7 +128,6 @@ st.markdown(
                 font-size: 12px;
             }
         }
-
     </style>
     """,
     unsafe_allow_html=True
