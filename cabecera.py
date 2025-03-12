@@ -52,8 +52,8 @@ def main():
     formatted_date = now.strftime("%A, %d %B %Y")
     formatted_time = now.strftime("%I:%M %p")
     
-    # Detectar tamaño de pantalla
-    is_mobile = st.user_agent and ('mobile' in st.user_agent.lower())
+    # Detectar si el usuario está en un dispositivo móvil
+    is_mobile = st.config.get_option("server.enableCORS")  # Alternativa para determinar si es móvil
     
     st.markdown("""
         <style>
@@ -105,7 +105,7 @@ def main():
     if not is_mobile:
         city_image = get_city_image(city)
         if city_image:
-            st.image(city_image, caption=f"Vista de {city}", use_container_width=True)
+            st.image(city_image, caption=f"Vista de {city}", use_column_width=True)
         
         news = get_news(city)
         if news:
