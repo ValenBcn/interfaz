@@ -15,6 +15,7 @@ st.markdown(
         }
         .block-container {
             max-width: 100% !important;
+            background: #fff;
         }
     </style>
     """,
