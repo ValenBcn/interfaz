@@ -95,7 +95,7 @@ def main():
         </style>
     """, unsafe_allow_html=True)
     
-    st.markdown('<div class="weather-container">', unsafe_allow_html=True)
+
     st.markdown(f"<div class='weather-item'><span>📍</span> Ciudad: {city}, {country}</div>", unsafe_allow_html=True)
     st.markdown(f"<div class='weather-item'><span>📅</span> Fecha: {formatted_date}</div>", unsafe_allow_html=True)
     st.markdown(f"<div class='weather-item'><span>⏰</span> Hora Local: {formatted_time}</div>", unsafe_allow_html=True)
