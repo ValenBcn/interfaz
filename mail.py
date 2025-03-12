@@ -6,72 +6,83 @@ import streamlit as st
 # Estilo CSS mejorado
 st.markdown(
     """
-    <style>
-        /* Fondo general de la aplicación */
-        .stApp {
-            max-width: 100% !important;
-            padding: 0 !important;
-            margin: 0 auto !important;
-            background-color: white !important; /* Fondo blanco */
-        }
+ <style>
+    /* Fondo general de la aplicación */
+    .stApp {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        background-color: white !important; /* Fondo blanco */
+        color: black !important; /* Texto en negro */
+    }
 
-        /* Contenedor principal */
-        .block-container {
-            max-width: 100% !important;
-            background: white !important;
-            padding: 20px;
-        }
+    /* Contenedor principal */
+    .block-container {
+        max-width: 100% !important;
+        background: white !important;
+        padding: 20px;
+        color: black !important; /* Texto en negro */
+    }
 
-        /* Títulos en azul */
-        h1, h2, h3, h4, h5, h6 {
-            color: #3B81F6 !important; /* Azul corporativo */
-        }
+    /* Títulos en azul */
+    h1, h2, h3, h4, h5, h6 {
+        color: #3B81F6 !important; /* Azul corporativo */
+    }
 
-        /* Botones con azul corporativo */
-        .stButton>button {
-            background-color: #3B81F6 !important;
-            color: white !important;
-            border-radius: 5px !important;
-            padding: 10px !important;
-        }
+    /* Botones con azul corporativo */
+    .stButton>button {
+        background-color: #3B81F6 !important;
+        color: white !important;
+        border-radius: 5px !important;
+        padding: 10px !important;
+    }
 
-        /* Campos de entrada */
-        input, textarea {
-            border: 1px solid #3B81F6 !important;
-            border-radius: 5px;
-        }
+    /* Campos de entrada */
+    input, textarea {
+        border: 1px solid #3B81F6 !important;
+        border-radius: 5px;
+        color: black !important; /* Texto en negro */
+    }
 
-        /* Lista de correos */
-        .email-list {
-            border-right: 2px solid #ddd;
-            overflow-y: auto;
-            max-height: 500px;
-            padding: 10px;
-        }
+    /* Lista de correos */
+    .email-list {
+        border-right: 2px solid #ddd;
+        overflow-y: auto;
+        max-height: 500px;
+        padding: 10px;
+        color: black !important; /* Texto en negro */
+    }
 
-        .email-item {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-            transition: background 0.2s;
-            background: #f9f9f9;
-            border-radius: 5px;
-        }
+    .email-item {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+        transition: background 0.2s;
+        background: #f9f9f9;
+        border-radius: 5px;
+        color: black !important; /* Texto en negro */
+    }
 
-        .email-item:hover {
-            background: #d0e1ff !important;
-        }
+    .email-item:hover {
+        background: #d0e1ff !important;
+    }
 
-        /* Contenedor del correo seleccionado */
-        .email-body {
-            padding: 15px;
-            background: white;
-            border-left: 3px solid #3B81F6;
-            max-height: 500px;
-            overflow-y: auto;
-        }
+    /* Contenedor del correo seleccionado */
+    .email-body {
+        padding: 15px;
+        background: white;
+        border-left: 3px solid #3B81F6;
+        max-height: 500px;
+        overflow-y: auto;
+        color: black !important; /* Texto en negro */
+    }
 
-    </style>
+    /* Mensaje de selección de correo */
+    .stAlert {
+        background-color: #dcebfe !important; /* Azul claro */
+        color: black !important; /* Texto en negro */
+    }
+</style>
     """,
     unsafe_allow_html=True
 )
