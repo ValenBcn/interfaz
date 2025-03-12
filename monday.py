@@ -53,10 +53,10 @@ st.markdown(
         .main-container {{
             background-color: #2B6CB0;
             color: white;
-            padding: 20px;
+            padding: 5px;
             border-radius: 10px;
             text-align: center;
-            max-width: 40%;
+            max-width: 90%;
             margin: auto;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }}
