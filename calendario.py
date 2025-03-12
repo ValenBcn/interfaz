@@ -57,7 +57,7 @@ st.markdown(
         .filters-container select {
             height: 36px;
             font-size: 14px;
-            max-width: 20% !important;
+            max-width: 30px !important;
         }
 
         /* Tamaño de fuente de los selectores */
