@@ -47,9 +47,8 @@ def main():
                 border-radius: 8px;
                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
                 font-family: 'Arial', sans-serif;
-                width: 95%;
-                max-width: 1200px;
-                margin: auto;
+                width: calc(100% - 40px);
+                margin: 0 auto;
                 flex-wrap: nowrap;
                 overflow-x: auto;
             }
