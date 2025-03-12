@@ -16,6 +16,11 @@ st.markdown(
         color: black !important; /* Texto en negro */
     }
 
+    /* Cambiar color de los labels de los inputs */
+    .stTextInput label {
+        color: black !important; /* Texto en negro */
+    }
+
     /* Contenedor principal */
     .block-container {
         max-width: 100% !important;
