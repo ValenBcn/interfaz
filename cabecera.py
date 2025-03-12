@@ -19,9 +19,9 @@ def get_weather(lat, lon):
         weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=auto"
         response = requests.get(weather_url)
         weather_data = response.json()
-        temp = weather_data["current_weather"]["temperature"]
-        forecast_max = weather_data["daily"]["temperature_2m_max"][0]
-        forecast_min = weather_data["daily"]["temperature_2m_min"][0]
+        temp = weather_data.get("current_weather", {}).get("temperature", "No disponible")
+        forecast_max = weather_data.get("daily", {}).get("temperature_2m_max", ["No disponible"])[0]
+        forecast_min = weather_data.get("daily", {}).get("temperature_2m_min", ["No disponible"])[0]
         return temp, forecast_max, forecast_min
     except:
         return "No disponible", "No disponible", "No disponible"
@@ -31,7 +31,7 @@ def get_city_image(city):
         search_url = f"https://api.unsplash.com/photos/random?query={city}&client_id=nFBMuleltXyzgXF-Yw-Bf-VqVhgau0iSU7Ow0O3AM_k"
         response = requests.get(search_url)
         image_data = response.json()
-        return image_data['urls']['regular']
+        return image_data.get('urls', {}).get('regular', None)
     except:
         return None
 
@@ -52,7 +52,6 @@ def main():
     formatted_date = now.strftime("%A, %d %B %Y")
     formatted_time = now.strftime("%I:%M %p")
     
-    # Detectar si el usuario está en un dispositivo móvil
     is_mobile = st.config.get_option("server.enableCORS")  # Alternativa para determinar si es móvil
     
     st.markdown("""
@@ -67,8 +66,8 @@ def main():
                 text-align: center;
                 font-family: 'Arial', sans-serif;
                 display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
+                flex-direction: column;
+                align-items: center;
                 gap: 10px;
             }
             .weather-item {
@@ -81,6 +80,7 @@ def main():
                 font-size: 16px;
                 font-weight: bold;
                 color: white;
+                width: 80%;
             }
             .news-container {
                 margin-top: 20px;
@@ -90,6 +90,7 @@ def main():
                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
                 color: black;
                 text-align: left;
+                width: 80%;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -105,7 +106,7 @@ def main():
     if not is_mobile:
         city_image = get_city_image(city)
         if city_image:
-            st.image(city_image, caption=f"Vista de {city}", use_column_width=True)
+            st.image(city_image, caption=f"Vista de {city}", use_container_width=True)
         
         news = get_news(city)
         if news:
