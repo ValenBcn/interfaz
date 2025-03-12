@@ -11,22 +11,22 @@ IMAP_PORT = 993  # Puerto seguro SSL
 # Aplicar estilo CSS para colores y responsividad
 st.markdown("""
     <style>
-        /* Contenedor general */
+        /* Contenedor principal */
         .main-container {
-            max-width: 100%; /* Ajusta el ancho según necesites */
-            margin: auto;
+            max-width: 100%; /* Ajusta el ancho completo */
+            padding: 0px;
         }
 
-        /* Estilo de la tabla */
+        /* Ajusta la tabla */
         .email-table {
             width: 100%;
-            overflow-x: auto;  /* Permite desplazamiento en pantallas pequeñas */
+            overflow-x: auto;  /* Scroll horizontal si es necesario */
             white-space: nowrap;
         }
 
         .email-table table {
-            width: 100%; 
-            min-width: 800px; /* Hace que la tabla sea más ancha */
+            width: 100%;
+            min-width: 1000px; /* Hace que la tabla sea más ancha */
             border-collapse: collapse;
         }
 
@@ -42,11 +42,18 @@ st.markdown("""
             border-bottom: 1px solid #ddd;
         }
 
-        /* Media query para pantallas pequeñas */
+        /* Asegurar responsividad */
         @media (max-width: 768px) {
             .email-table {
                 overflow-x: scroll;
             }
+        }
+
+        /* Ajusta el ancho del cuerpo de Streamlit */
+        .stApp {
+            max-width: 100%;
+            padding: 0px;
+            margin: auto;
         }
     </style>
 """, unsafe_allow_html=True)
