@@ -105,6 +105,10 @@ def main():
                     margin: auto;
                     text-align: center;
                 }}
+                /* idioma */
+                .st.selectbox {{
+                    color: black !important; /* Texto en negro */
+                }}     
                 @media (max-width: 600px) {{
                     .weather-container {{
                         font-size: 14px;
