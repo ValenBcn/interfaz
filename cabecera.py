@@ -37,8 +37,6 @@ def main():
         """
         <style>
             .header-container {
-                display: flex;
-                justify-content: space-between;
                 align-items: center;
                 gap: 15px;
                 padding: 15px;
