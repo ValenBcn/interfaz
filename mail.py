@@ -6,7 +6,7 @@ import pandas as pd
 import time
 
 # Configuración del servidor IMAP
-IMAP_SERVER = "mail.datatobe.com"  # Cambia esto por tu servidor IMAP
+IMAP_SERVER = "mail.tudominio.com"  # Cambia esto por tu servidor IMAP
 IMAP_PORT = 993  # IMAP seguro por SSL
 
 st.title("📧 Bandeja de Entrada")
@@ -42,7 +42,7 @@ if st.session_state.logged_in:
 
     with col1:
         st.subheader("📩 Correos Recibidos")
-        
+
         while True:
             try:
                 mail = st.session_state.mail
@@ -74,15 +74,20 @@ if st.session_state.logged_in:
                                 mail_map[subject] = msg
 
                                 # Agregar a la lista
-                                data.append([date, subject, sender])
+                                data.append({"Fecha": date, "Asunto": subject, "Remitente": sender})
 
                     # Convertir en DataFrame
-                    df = pd.DataFrame(data, columns=["📅 Fecha", "📨 Asunto", "🏷️ Remitente"])
-                    selected = st.selectbox("Selecciona un correo:", df["📨 Asunto"].tolist(), key="email_select")
+                    df = pd.DataFrame(data)
 
-                    # Almacenar el correo seleccionado en la sesión
-                    if selected:
-                        st.session_state.selected_email = mail_map[selected]
+                    # Mostrar la tabla con selección de fila
+                    selected_row = st.dataframe(df, use_container_width=True)
+
+                    # Detectar clic en una fila
+                    if st.session_state.selected_email is None and not df.empty:
+                        st.session_state.selected_email = mail_map[df.iloc[0]["Asunto"]]
+
+                    if selected_row is not None:
+                        st.session_state.selected_email = mail_map[selected_row["Asunto"].iloc[0]]
 
                 else:
                     st.info("📭 No tienes correos nuevos.")
