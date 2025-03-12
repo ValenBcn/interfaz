@@ -3,19 +3,16 @@ import email
 from email.header import decode_header
 import streamlit as st
 import pandas as pd
-import time
 
 # Configuración del servidor IMAP
-IMAP_SERVER = "mail.datatobe.com"  # Cambia esto por tu servidor IMAP
-IMAP_PORT = 993  # IMAP seguro por SSL
+IMAP_SERVER = "mail.tudominio.com"  # Cambia esto por tu servidor IMAP
+IMAP_PORT = 993  # Puerto seguro SSL
 
 st.title("📧 Bandeja de Entrada")
 
 # Variables de sesión
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-if "selected_email" not in st.session_state:
-    st.session_state.selected_email = None
 
 if not st.session_state.logged_in:
     # Campos de login
@@ -24,6 +21,7 @@ if not st.session_state.logged_in:
 
     if st.button("Iniciar Sesión"):
         try:
+            # Conectar al servidor IMAP
             st.session_state.mail = imaplib.IMAP4_SSL(IMAP_SERVER, IMAP_PORT)
             st.session_state.mail.login(email_user, password)
             st.session_state.logged_in = True
@@ -33,87 +31,54 @@ if not st.session_state.logged_in:
         except imaplib.IMAP4.error as e:
             st.error(f"❌ Error de autenticación: {e}")
 
-# Si ya inició sesión, mostrar correos en tabla y actualizar cada 1 min
+# Si ya inició sesión, mostrar correos en tabla
 if st.session_state.logged_in:
     st.success(f"✅ Conectado como {st.session_state.email_user}")
 
-    # Contenedor de layout: dividir en 2 columnas
-    col1, col2 = st.columns([2, 3])  # 2: lista de correos, 3: contenido del correo
+    try:
+        mail = st.session_state.mail
+        mail.select("INBOX")  # Seleccionar bandeja de entrada
 
-    with col1:
-        st.subheader("📩 Correos Recibidos")
+        # Buscar los últimos 10 correos
+        status, messages = mail.search(None, "ALL")
+        mail_ids = messages[0].split()
 
-        while True:
-            try:
-                mail = st.session_state.mail
-                mail.select("INBOX")  # Seleccionar bandeja de entrada
+        if mail_ids:
+            data = []
+            for mail_id in reversed(mail_ids[-10:]):  # Últimos 10 correos
+                _, msg_data = mail.fetch(mail_id, "(RFC822)")
+                for response_part in msg_data:
+                    if isinstance(response_part, tuple):
+                        msg = email.message_from_bytes(response_part[1])
 
-                # Buscar todos los correos (cambiar "ALL" a "UNSEEN" si solo quieres no leídos)
-                status, messages = mail.search(None, "ALL")
+                        # Obtener fecha, asunto y remitente
+                        sender = msg["From"]
+                        subject, encoding = decode_header(msg["Subject"])[0]
+                        if isinstance(subject, bytes):
+                            subject = subject.decode(encoding or "utf-8")
+                        date = msg["Date"]
 
-                mail_ids = messages[0].split()
+                        # Extraer el contenido del email (500 caracteres)
+                        body = ""
+                        if msg.is_multipart():
+                            for part in msg.walk():
+                                if part.get_content_type() == "text/plain":
+                                    body = part.get_payload(decode=True).decode(errors="ignore")
+                                    break
+                        else:
+                            body = msg.get_payload(decode=True).decode(errors="ignore")
 
-                if mail_ids:
-                    data = []
-                    mail_map = {}
+                        body_extract = body[:500] + "..." if len(body) > 500 else body  # Limitar a 500 chars
 
-                    for mail_id in reversed(mail_ids[-10:]):  # Últimos 10 correos
-                        _, msg_data = mail.fetch(mail_id, "(RFC822)")
-                        for response_part in msg_data:
-                            if isinstance(response_part, tuple):
-                                msg = email.message_from_bytes(response_part[1])
+                        # Agregar a la lista
+                        data.append({"Fecha": date, "Asunto": subject, "Remitente": sender, "Extracto": body_extract})
 
-                                # Obtener remitente, asunto y fecha
-                                sender = msg["From"]
-                                subject, encoding = decode_header(msg["Subject"])[0]
-                                if isinstance(subject, bytes):
-                                    subject = subject.decode(encoding or "utf-8")
-                                date = msg["Date"]
+            # Convertir en DataFrame y mostrar en tabla
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
 
-                                # Guardar referencia del email
-                                mail_map[subject] = msg
+        else:
+            st.info("📭 No tienes correos nuevos.")
 
-                                # Agregar a la lista
-                                data.append({"Fecha": date, "Asunto": subject, "Remitente": sender})
-
-                    # Convertir en DataFrame
-                    df = pd.DataFrame(data)
-
-                    # Mostrar la tabla con selección de fila
-                    selected_row = st.dataframe(df, use_container_width=True)
-
-                    # Detectar clic en una fila
-                    if st.session_state.selected_email is None and not df.empty:
-                        st.session_state.selected_email = mail_map[df.iloc[0]["Asunto"]]
-
-                    if selected_row is not None:
-                        st.session_state.selected_email = mail_map[selected_row["Asunto"].iloc[0]]
-
-                else:
-                    st.info("📭 No tienes correos nuevos.")
-
-            except Exception as e:
-                st.error(f"⚠️ Error al recuperar los correos: {str(e)}")
-
-            time.sleep(60)  # Refrescar cada minuto
-            st.rerun()
-
-    # **📬 Contenedor de correo seleccionado**
-    with col2:
-        if st.session_state.selected_email:
-            st.subheader("📄 Contenido del correo")
-            email_msg = st.session_state.selected_email
-
-            # Decodificar el cuerpo del mensaje
-            body = ""
-            if email_msg.is_multipart():
-                for part in email_msg.walk():
-                    content_type = part.get_content_type()
-                    if content_type == "text/plain":
-                        body = part.get_payload(decode=True).decode()
-                        break
-            else:
-                body = email_msg.get_payload(decode=True).decode()
-
-            # Mostrar contenido
-            st.text_area("📜 Contenido:", body, height=300)
+    except Exception as e:
+        st.error(f"⚠️ Error al recuperar los correos: {str(e)}")
