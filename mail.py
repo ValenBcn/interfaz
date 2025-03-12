@@ -13,7 +13,7 @@ st.markdown("""
     <style>
         /* Contenedor general */
         .main-container {
-            max-width: 95%; /* Ajusta el ancho según necesites */
+            max-width: 100%; /* Ajusta el ancho según necesites */
             margin: auto;
         }
 
