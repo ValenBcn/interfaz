@@ -39,17 +39,17 @@ def main():
             .header-container {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: center;
+                justify-content: space-around;
                 align-items: center;
                 gap: 10px;
-                padding: 10px;
+                padding: 15px;
                 background: #3B81F6;
                 color: white;
                 border-radius: 8px;
                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
                 font-family: 'Arial', sans-serif;
-                max-width: 100%;
-                overflow: hidden;
+                max-width: 90%;
+                margin: auto;
             }
             .header-item {
                 display: flex;
@@ -58,23 +58,23 @@ def main():
                 background: #4C8BF5;
                 padding: 10px;
                 border-radius: 8px;
-                font-size: 14px;
+                font-size: 16px;
                 font-weight: bold;
                 color: white;
                 text-align: center;
-                flex: 1 1 auto;
-                min-width: 120px;
-                max-width: 200px;
+                flex: 1;
+                min-width: 180px;
+                max-width: 250px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            @media (min-width: 801px) {
+            @media (max-width: 900px) {
                 .header-container {
-                    flex-wrap: nowrap;
+                    flex-wrap: wrap;
                 }
             }
-            @media (max-width: 800px) {
+            @media (max-width: 600px) {
                 .header-container {
                     flex-direction: column;
                 }
