@@ -102,6 +102,28 @@ st.markdown(
             color: black !important;
         }
 
+        /* Ajuste del contenedor de días festivos */
+        .holidays-container {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .holidays-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: black !important;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .holiday-item {
+            font-size: 16px;
+            color: black !important;
+            padding: 5px 0;
+        }
+
         /* Ajustar el tamaño del calendario en móviles */
         @media (max-width: 768px) {
             .filters-container {
@@ -181,9 +203,13 @@ table += "</table></div>"
 st.markdown(table, unsafe_allow_html=True)
 
 # **📌 Días festivos del mes seleccionado**
-st.markdown(f"### 📌 Días festivos en {city}")
+st.markdown('<div class="holidays-container">', unsafe_allow_html=True)
+st.markdown(f'<div class="holidays-title">📌 Días festivos en {city}</div>', unsafe_allow_html=True)
+
 if holidays_by_month:
     for h in holidays_by_month:
-        st.markdown(f"📅 **{h['date']}** - {h['localName']}")
+        st.markdown(f'<div class="holiday-item">📅 <b>{h["date"]}</b> - {h["localName"]}</div>', unsafe_allow_html=True)
 else:
-    st.write("No hay días festivos en este mes.")
+    st.markdown('<div class="holiday-item">No hay días festivos en este mes.</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor de días festivos
