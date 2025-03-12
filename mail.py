@@ -55,7 +55,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("📧 Bandeja de Entrada")
+#st.title("📧 Bandeja de Entrada")
 
 # Variables de sesión
 if "logged_in" not in st.session_state:
