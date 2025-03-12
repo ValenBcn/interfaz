@@ -74,38 +74,39 @@ st.markdown(
             padding: 20px;
         }
 
-        /* Contenedor principal */
-        .block-container {
-            max-width: 100%;
-            margin: auto;
-            background: white;
-        }
-
         /* Títulos y subtítulos */
         h1, h2, h3, h4, h5, h6 {
             color: #3B81F6 !important; /* Azul corporativo */
             font-weight: bold;
         }
 
-        /* Bordes y mejoras en alertas */
-        .stAlert {
-            border-left: 5px solid #3B81F6 !important;
-            background-color: #f0f4ff !important;
-            padding: 15px;
+        /* Selectbox - Fondo Azul Tenue y Texto Negro */
+        div[data-testid="stWidgetLabel"] label {
+            color: black !important; /* Título en negro */
+            font-weight: bold;
         }
 
-        /* Botones personalizados */
-        .stButton>button {
-            background-color: #3B81F6 !important;
-            color: white !important;
-            border-radius: 5px;
+        div[data-testid="stSelectbox"] {
+            background-color: #DCE8FF !important;
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        div[data-testid="stSelectbox"] div {
+            background-color: #DCE8FF !important;
+            color: black !important;
+        }
+
+        div[data-testid="stSelectbox"] select {
+            background-color: #DCE8FF !important;
+            color: black !important;
+            font-size: 14px;
             padding: 10px;
         }
 
-        /* Select box */
-        .stSelectbox label {
-            color: black !important; /* Texto en negro */
-            font-weight: bold;
+        div[data-testid="stSelectbox"] option {
+            background-color: #DCE8FF !important;
+            color: black !important;
         }
 
         /* Contenedor con scroll para tareas */
@@ -174,9 +175,4 @@ for task in tasks:
     <div class="task-card">
         <h3>📝 {task_name}</h3>
         <p>📅 <strong>Inicio:</strong> {start_date} | ⏳ <strong>Vencimiento:</strong> {due_date}</p>
-        <p>🔴 <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</p>
-        <p>📝 <strong>Notas:</strong> {notes if notes else "No definido"}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor del scroll
+        <p>🔴 <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</
