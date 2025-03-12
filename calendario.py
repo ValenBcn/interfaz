@@ -52,6 +52,11 @@ st.markdown(
             margin-bottom: 5px;
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
         }
+        /* Asegurar que los títulos de los selectores sean negros */
+        div[data-testid="stWidgetLabel"] label {
+            color: black !important;  /* Forzar color negro */
+            font-weight: bold;  /* Hacer que el texto sea más visible */
+        }
 
         /* Ajustar el color del texto de los títulos de los selectores */
         .filters-container label {
