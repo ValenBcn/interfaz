@@ -88,6 +88,7 @@ def main():
                     padding: 0 !important;
                     margin: 0 auto !important;
                     background-color: white !important; /* Fondo blanco */
+                    color: black !important; /* Texto en negro */
 
                 }}       
                 .weather-container {{
