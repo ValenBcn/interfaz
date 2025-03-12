@@ -7,7 +7,7 @@ st.title("📬 Correos Recientes")
 
 # Usuario y contraseña
 user = st.text_input("Correo:", placeholder="usuario@tu-dominio.com")
-password = st.text_input("Contraseña:", type="password", placeholder="••••••••", type="password")
+password = st.text_input("Contraseña:", placeholder="••••••••", type="password")
 
 if st.button("📩 Consultar Correos"):
     try:
