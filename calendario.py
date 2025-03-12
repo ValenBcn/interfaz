@@ -66,7 +66,8 @@ with st.container():
 
     # Selección de mes
     with col4:
-        month_index = st.selectbox("🗓 Mes", month_names[country_code], index=current_month - 1)
+        selected_month = st.selectbox("🗓 Mes", month_names[country_code], index=current_month - 1)
+        month_index = month_names[country_code].index(selected_month) + 1  # Convertir nombre del mes a índice (1-12)
 
 # 📌 Obtener días festivos para el país y año seleccionados
 holidays = get_holidays(year, country_code)
