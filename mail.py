@@ -1,17 +1,18 @@
 import streamlit as st
 import imaplib
 import email
+from email.header import decode_header
 
 st.title("📬 Correos Recientes")
 
 # Usuario y contraseña
 user = st.text_input("Correo:", placeholder="usuario@tu-dominio.com")
-password = st.text_input("Contraseña:", type="password", placeholder="••••••••")
+password = st.text_input("Contraseña:", type="password", placeholder="••••••••", type="password")
 
 if st.button("📩 Consultar Correos"):
     try:
         # Conectar al servidor IMAP de HostGator
-        mail = imaplib.IMAP4_SSL("mail.datatobe.com")
+        mail = imaplib.IMAP4_SSL("mail.tu-dominio.com")  # Cambia por tu dominio
         mail.login(user, password)
         mail.select("inbox")
 
@@ -24,8 +25,20 @@ if st.button("📩 Consultar Correos"):
             for response_part in msg_data:
                 if isinstance(response_part, tuple):
                     msg = email.message_from_bytes(response_part[1])
-                    st.markdown(f"**📧 {msg['From']} - {msg['Subject']}**")
-                    st.write(f"🗓 {msg['Date']}")
+                    
+                    # Decodificar el remitente y el asunto
+                    from_name, encoding = decode_header(msg["From"])[0]
+                    if isinstance(from_name, bytes):
+                        from_name = from_name.decode(encoding or "utf-8")
+
+                    subject, encoding = decode_header(msg["Subject"])[0]
+                    if isinstance(subject, bytes):
+                        subject = subject.decode(encoding or "utf-8")
+
+                    date = msg["Date"]
+                    
+                    st.markdown(f"**📧 {from_name}** - {subject}")
+                    st.write(f"🗓 {date}")
                     st.write("---")
 
         mail.logout()
