@@ -87,7 +87,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(f'<div class="main-container"><h2>📋 Tareas en **{board_name}**</h2></div>', unsafe_allow_html=True)
+#st.markdown(f'<div class="main-container"><h2>📋 Tareas en **{board_name}**</h2></div>', unsafe_allow_html=True)
+st.markdown(f'<div class="main-container"><h2>📋 <a href="https://datatobe.monday.com/boards/{BOARD_ID}" target="_blank" style="color: white; text-decoration: none;">Tareas en {board_name}</a></h2></div>', unsafe_allow_html=True)
 
 for task in tasks:
     task_name = task["name"]
