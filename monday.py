@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # Configuración
-API_KEY = "TU_API_KEY"
+API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ4NDExMTkyNCwiYWFpIjoxMSwidWlkIjo3MzMxMDUyOCwiaWFkIjoiMjAyNS0wMy0xMVQxNzo1NToyNS4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6Mjg0ODc4MzgsInJnbiI6ImV1YzEifQ.Pp_UNPi-wRC1Y9yxFEQ_Rs9VC2J78QLjK58x7puQBAM"
 BOARD_ID = "1863450371"  # Board HR
 API_URL = "https://api.monday.com/v2"
 
