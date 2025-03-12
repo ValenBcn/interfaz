@@ -149,10 +149,10 @@ st.markdown(
 selected_status = st.selectbox("📌 Filtrar por estado:", status_options)
 
 # **Título con link al board**
-st.markdown(f'<h2>📋 <a href="https://datatobe.monday.com/boards/{BOARD_ID}" target="_blank">Tareas en {board_name}</a></h2>', unsafe_allow_html=True)
+#st.markdown(f'<h2>📋 <a href="https://datatobe.monday.com/boards/{BOARD_ID}" target="_blank">Tareas en {board_name}</a></h2>', unsafe_allow_html=True)
 
 # **Contenedor con scroll**
-st.markdown('<div class="scroll-container">', unsafe_allow_html=True)
+#st.markdown('<div class="scroll-container">', unsafe_allow_html=True)
 
 # **Mostrar las tareas con el filtro aplicado**
 for task in tasks:
