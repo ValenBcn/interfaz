@@ -3,7 +3,7 @@ import email
 from email.header import decode_header
 import streamlit as st
 
-
+# Estilo CSS mejorado
 st.markdown(
     """
     <style>
@@ -15,23 +15,16 @@ st.markdown(
             background-color: white !important; /* Fondo blanco */
         }
 
-        /* Contenedor principal con fondo blanco */
+        /* Contenedor principal */
         .block-container {
             max-width: 100% !important;
             background: white !important;
             padding: 20px;
         }
 
-        /* Títulos y encabezados con azul */
+        /* Títulos en azul */
         h1, h2, h3, h4, h5, h6 {
             color: #3B81F6 !important; /* Azul corporativo */
-        }
-
-        /* Bordes y sombras para secciones */
-        .stAlert {
-            border-left: 5px solid #3B81F6 !important;
-            background-color: #f0f4ff !important;
-            padding: 15px;
         }
 
         /* Botones con azul corporativo */
@@ -48,6 +41,36 @@ st.markdown(
             border-radius: 5px;
         }
 
+        /* Lista de correos */
+        .email-list {
+            border-right: 2px solid #ddd;
+            overflow-y: auto;
+            max-height: 500px;
+            padding: 10px;
+        }
+
+        .email-item {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background 0.2s;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .email-item:hover {
+            background: #d0e1ff !important;
+        }
+
+        /* Contenedor del correo seleccionado */
+        .email-body {
+            padding: 15px;
+            background: white;
+            border-left: 3px solid #3B81F6;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
     </style>
     """,
     unsafe_allow_html=True
@@ -57,37 +80,7 @@ st.markdown(
 IMAP_SERVER = "mail.datatobe.com"  # Servidor IMAP
 IMAP_PORT = 993  # Puerto SSL seguro
 
-# Estilo CSS para mejorar la visualización
-st.markdown("""
-    <style>
-        .email-list {
-            border-right: 2px solid #ddd;
-            overflow-y: auto;
-            max-height: 500px;
-        }
-        .email-item {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .email-item:hover {
-            background: #f3f3f3;
-        }
-        .email-selected {
-            background: #d9e6fd !important;
-        }
-        .email-body {
-            padding: 15px;
-            background: #fff;
-            border-left: 2px solid #ddd;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-#st.title("📧 Bandeja de Entrada")
+st.title("📧 Bandeja de Entrada")
 
 # Variables de sesión
 if "logged_in" not in st.session_state:
@@ -147,10 +140,10 @@ if st.session_state.logged_in:
 
                         emails.append({"Fecha": date, "Asunto": subject, "Remitente": sender, "Cuerpo": body, "ID": mail_id})
 
-            # Crear Layout en columnas (Izquierda: Lista de correos | Derecha: Cuerpo del correo seleccionado)
+            # 📌 **Diseño en columnas** 
             col1, col2 = st.columns([2, 3])
 
-            # 📌 **Columna 1 - Lista de correos**
+            # **Columna Izquierda - Lista de correos**
             with col1:
                 st.subheader("📥 Correos Recibidos")
                 for email_data in emails:
@@ -158,7 +151,7 @@ if st.session_state.logged_in:
                     if st.button(f"✉️ {email_data['Asunto']} - {email_data['Remitente']}", key=button_key):
                         st.session_state.selected_email = email_data
 
-            # 📌 **Columna 2 - Cuerpo del correo seleccionado**
+            # **Columna Derecha - Cuerpo del correo seleccionado**
             with col2:
                 if st.session_state.selected_email:
                     email_selected = st.session_state.selected_email
