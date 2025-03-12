@@ -31,30 +31,30 @@ def main():
         <style>
             .weather-container {
                 max-width: 100%;
-                background: #1E88E5;
+                background: linear-gradient(90deg, #4A90E2, #357ABD);
                 color: white;
-                padding: 15px;
-                border-radius: 8px;
-                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                padding: 20px;
+                border-radius: 12px;
+                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
                 text-align: center;
                 font-family: 'Arial', sans-serif;
                 display: flex;
-                justify-content: center;
-                align-items: center;
                 flex-wrap: wrap;
-                gap: 10px;
+                justify-content: center;
+                gap: 15px;
             }
             .weather-item {
                 display: flex;
                 align-items: center;
-                gap: 5px;
-                background: rgba(255, 255, 255, 0.2);
-                padding: 10px;
-                border-radius: 5px;
-                font-size: 14px;
+                gap: 10px;
+                background: rgba(255, 255, 255, 0.15);
+                padding: 12px;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: bold;
             }
             .weather-icon {
-                font-size: 18px;
+                font-size: 20px;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -68,11 +68,11 @@ def main():
     formatted_date = now.strftime("%A, %d %B %Y")
     formatted_time = now.strftime("%I:%M %p")
     
-    st.markdown(f"<div class='weather-item'><span class='weather-icon'>📍</span><strong> Ciudad:</strong> {city}, {country}</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='weather-item'><span class='weather-icon'>📅</span><strong> Fecha:</strong> {formatted_date}</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='weather-item'><span class='weather-icon'>⏰</span><strong> Hora Local:</strong> {formatted_time}</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='weather-item'><span class='weather-icon'>🌡</span><strong> Temperatura:</strong> {temp}°C</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='weather-item'><span class='weather-icon'>🔮</span><strong> Previsión:</strong> Máx: {forecast_max}°C / Mín: {forecast_min}°C</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='weather-item'><span class='weather-icon'>📍</span> Ciudad: {city}, {country}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='weather-item'><span class='weather-icon'>📅</span> Fecha: {formatted_date}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='weather-item'><span class='weather-icon'>⏰</span> Hora Local: {formatted_time}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='weather-item'><span class='weather-icon'>🌡</span> Temperatura: {temp}°C</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='weather-item'><span class='weather-icon'>🔮</span> Previsión: Máx: {forecast_max}°C / Mín: {forecast_min}°C</div>", unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
