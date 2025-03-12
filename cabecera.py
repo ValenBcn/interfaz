@@ -38,19 +38,20 @@ def main():
         <style>
             .header-container {
                 display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
+                justify-content: space-between;
                 align-items: center;
-                gap: 10px;
+                gap: 15px;
                 padding: 15px;
                 background: #3B81F6;
                 color: white;
                 border-radius: 8px;
                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
                 font-family: 'Arial', sans-serif;
-                width: 90%;
+                width: 95%;
                 max-width: 1200px;
                 margin: auto;
+                flex-wrap: nowrap;
+                overflow-x: auto;
             }
             .header-item {
                 display: flex;
@@ -69,31 +70,6 @@ def main():
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-            }
-            @media (min-width: 801px) {
-                .header-container {
-                    flex-wrap: nowrap;
-                    justify-content: space-between;
-                }
-            }
-            @media (max-width: 800px) {
-                .header-container {
-                    flex-wrap: wrap;
-                    justify-content: center;
-                }
-                .header-item {
-                    min-width: 45%;
-                }
-            }
-            @media (max-width: 500px) {
-                .header-container {
-                    flex-direction: column;
-                    width: 100%;
-                    max-width: none;
-                }
-                .header-item {
-                    width: 100%;
-                }
             }
         </style>
         """,
