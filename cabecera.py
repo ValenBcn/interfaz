@@ -75,11 +75,11 @@ def main():
     
     st.markdown(f"""
         <div class='header-container'>
-            <div class='header-item'>📍 Ciudad: {city}, {country}</div>
-            <div class='header-item'>📅 Fecha: {formatted_date}</div>
-            <div class='header-item'>⏰ Hora Local: {formatted_time}</div>
-            <div class='header-item'>🌡 Temperatura: {temp}°C</div>
-            <div class='header-item'>🔮 Previsión: Máx: {forecast_max}°C / Mín: {forecast_min}°C</div>
+            <div class='header-item'>&#x1F4CD; Ciudad: {city}, {country}</div>
+            <div class='header-item'>&#x1F4C5; Fecha: {formatted_date}</div>
+            <div class='header-item'>&#x23F0; Hora Local: {formatted_time}</div>
+            <div class='header-item'>&#x1F321; Temperatura: {temp}°C</div>
+            <div class='header-item'>&#x1F52E; Previsión: Máx: {forecast_max}°C / Mín: {forecast_min}°C</div>
         </div>
     """, unsafe_allow_html=True)
 
