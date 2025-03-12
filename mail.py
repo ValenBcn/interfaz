@@ -3,6 +3,24 @@ import email
 from email.header import decode_header
 import streamlit as st
 
+
+# Aplicar CSS para ajustar el ancho de la interfaz
+st.markdown(
+    """
+    <style>
+        .stApp {
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+        }
+        .block-container {
+            max-width: 100% !important;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Configuración del servidor IMAP
 IMAP_SERVER = "mail.datatobe.com"  # Servidor IMAP
 IMAP_PORT = 993  # Puerto SSL seguro
