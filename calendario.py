@@ -70,7 +70,7 @@ with st.container():
 
 # 📌 Obtener días festivos para el país y año seleccionados
 holidays = get_holidays(year, country_code)
-holiday_dates = {datetime.datetime.strptime(h["date"], "%Y-%m-%d").day: h["localName"] for h in holidays if int(h["date"].split("-")[1]) == month_index + 1}
+holiday_dates = {datetime.datetime.strptime(h["date"], "%Y-%m-%d").day: h["localName"] for h in holidays if int(h["date"].split("-")[1]) == int(month_index) + 1}
 
 # 📅 Mostrar mes seleccionado dinámicamente
 st.markdown(f"### {month_index + 1} - {year}")
