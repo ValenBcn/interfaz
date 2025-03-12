@@ -39,7 +39,7 @@ def main():
             .header-container {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: space-between;
+                justify-content: center;
                 align-items: center;
                 gap: 10px;
                 padding: 10px;
@@ -48,6 +48,8 @@ def main():
                 border-radius: 8px;
                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
                 font-family: 'Arial', sans-serif;
+                max-width: 100%;
+                overflow: hidden;
             }
             .header-item {
                 display: flex;
@@ -56,13 +58,21 @@ def main():
                 background: #4C8BF5;
                 padding: 10px;
                 border-radius: 8px;
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: bold;
                 color: white;
                 text-align: center;
-                flex: 1;
-                min-width: 150px;
+                flex: 1 1 auto;
+                min-width: 120px;
+                max-width: 200px;
                 white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            @media (min-width: 801px) {
+                .header-container {
+                    flex-wrap: nowrap;
+                }
             }
             @media (max-width: 800px) {
                 .header-container {
@@ -70,6 +80,7 @@ def main():
                 }
                 .header-item {
                     width: 100%;
+                    max-width: none;
                 }
             }
         </style>
