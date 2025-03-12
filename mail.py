@@ -9,39 +9,50 @@ IMAP_PORT = 993  # IMAP seguro por SSL
 
 st.title("📧 Bandeja de Entrada")
 
-# Pedir credenciales al usuario
-email_user = st.text_input("Correo Electrónico:", placeholder="usuario@tudominio.com")
-password = st.text_input("Contraseña:", type="password", placeholder="••••••••")
+# Variables de sesión para ocultar el login después de iniciar sesión
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-if st.button("Iniciar Sesión"):
+if not st.session_state.logged_in:
+    # Pedir credenciales al usuario
+    email_user = st.text_input("Correo Electrónico:", placeholder="usuario@tudominio.com")
+    password = st.text_input("Contraseña:", type="password", placeholder="••••••••")
+
+    if st.button("Iniciar Sesión"):
+        try:
+            st.session_state.mail = imaplib.IMAP4_SSL(IMAP_SERVER, IMAP_PORT)
+            st.session_state.mail.login(email_user, password)
+            st.session_state.logged_in = True  # Cambia el estado a loggeado
+            st.session_state.email_user = email_user
+            st.session_state.password = password
+            st.rerun()
+        except imaplib.IMAP4.error as e:
+            st.error(f"❌ Error de autenticación: {e}")
+
+# Si ya inició sesión, mostrar los correos
+if st.session_state.logged_in:
+    st.success(f"✅ Conectado como {st.session_state.email_user}")
+    
     try:
-        st.write("⏳ Conectando al servidor IMAP...")
-        
-        # Conectar con IMAP
-        mail = imaplib.IMAP4_SSL(IMAP_SERVER, IMAP_PORT)
-        mail.login(email_user, password)
+        mail = st.session_state.mail
+        mail.select("INBOX")  # Seleccionar bandeja de entrada
 
-        # Seleccionar la bandeja de entrada
-        mail.select("INBOX")
+        # Buscar solo correos NO LEÍDOS
+        status, messages = mail.search(None, "UNSEEN")
 
-        # Buscar todos los correos (puedes filtrar por UNSEEN para no leídos)
-        status, messages = mail.search(None, "ALL")
+        mail_ids = messages[0].split()
 
-        # Si hay correos
-        if status == "OK":
-            st.success("✅ Correos cargados correctamente.")
+        # Si hay correos nuevos
+        if mail_ids:
+            st.write(f"📩 **Tienes {len(mail_ids)} correos nuevos**")
 
-            # Obtener los últimos 10 correos
-            mail_ids = messages[0].split()[-10:]
-
-            for mail_id in reversed(mail_ids):  # Mostrar del más reciente al más antiguo
+            for mail_id in reversed(mail_ids[:10]):  # Muestra solo los 10 más recientes
                 _, msg_data = mail.fetch(mail_id, "(RFC822)")
                 for response_part in msg_data:
                     if isinstance(response_part, tuple):
-                        # Decodificar el email
                         msg = email.message_from_bytes(response_part[1])
 
-                        # Obtener remitente
+                        # Obtener remitente y asunto
                         sender = msg["From"]
                         subject, encoding = decode_header(msg["Subject"])[0]
                         if isinstance(subject, bytes):
@@ -51,21 +62,12 @@ if st.button("Iniciar Sesión"):
                         date = msg["Date"]
 
                         # Mostrar en Streamlit
-                        with st.expander(f"📩 {subject}"):
-                            st.write(f"**📝 Remitente:** {sender}")
-                            st.write(f"**📅 Fecha:** {date}")
+                        st.write(f"📬 **{subject}**")
+                        st.write(f"📅 {date} - ✉️ {sender}")
+                        st.divider()
 
-                            # Si el correo tiene cuerpo, extraerlo
-                            for part in msg.walk():
-                                if part.get_content_type() == "text/plain":
-                                    body = part.get_payload(decode=True).decode("utf-8", "ignore")
-                                    st.write(f"📄 **Mensaje:**\n\n{body[:500]}...")  # Limitar a 500 caracteres
-
-            mail.logout()
         else:
-            st.warning("⚠️ No hay correos en la bandeja de entrada.")
+            st.info("📭 No tienes correos nuevos.")
 
-    except imaplib.IMAP4.error as e:
-        st.error(f"❌ Error de autenticación: {e}")
     except Exception as e:
-        st.error(f"⚠️ Error desconocido: {str(e)}")
+        st.error(f"⚠️ Error al recuperar los correos: {str(e)}")
