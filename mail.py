@@ -10,68 +10,45 @@ IMAP_PORT = 993  # Puerto seguro SSL
 
 # Aplicar estilo CSS para colores y responsividad
 st.markdown("""
+st.markdown("""
     <style>
-        /* Fondo general blanco */
-        body {
-            background-color: white;
-            color: #212529;
+        /* Contenedor general */
+        .main-container {
+            max-width: 95%; /* Ajusta el ancho según necesites */
+            margin: auto;
         }
 
-        /* Títulos en azul */
-        h1, h2, h3 {
-            color: #3B81F6;
-            font-weight: bold;
-        }
-
-        /* Contenedor de la tabla */
+        /* Estilo de la tabla */
         .email-table {
-            overflow-x: auto;
+            width: 100%;
+            overflow-x: auto;  /* Permite desplazamiento en pantallas pequeñas */
             white-space: nowrap;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: white;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Tabla de correos */
         .email-table table {
-            width: 100%;
-            min-width: 600px;
+            width: 100%; 
+            min-width: 800px; /* Hace que la tabla sea más ancha */
             border-collapse: collapse;
         }
 
         .email-table th {
-            background-color: #3B81F6;
+            background-color: #3B81F6; /* Azul corporativo */
             color: white;
-            padding: 10px;
+            padding: 12px;
             text-align: left;
         }
 
         .email-table td {
-            padding: 8px;
+            padding: 10px;
             border-bottom: 1px solid #ddd;
         }
 
-        /* Botón de inicio de sesión */
-        .stButton>button {
-            background-color: #3B81F6;
-            color: white;
-            border-radius: 5px;
-            padding: 10px 20px;
-            border: none;
+        /* Media query para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .email-table {
+                overflow-x: scroll;
+            }
         }
-
-        .stButton>button:hover {
-            background-color: #2A66D9;
-        }
-
-        /* Campos de entrada */
-        .stTextInput>div>div>input {
-            border: 2px solid #3B81F6;
-            border-radius: 5px;
-            padding: 8px;
-        }
-
     </style>
 """, unsafe_allow_html=True)
 
