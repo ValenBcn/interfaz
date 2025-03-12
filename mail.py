@@ -11,13 +11,13 @@ IMAP_PORT = 993  # Puerto seguro SSL
 # Aplicar estilo CSS para colores y responsividad
 st.markdown("""
     <style>
-        /* Fondo general y color de texto */
+        /* Fondo general blanco */
         body {
             background-color: white;
             color: #212529;
         }
 
-        /* Títulos y subtítulos */
+        /* Títulos en azul */
         h1, h2, h3 {
             color: #3B81F6;
             font-weight: bold;
@@ -58,6 +58,7 @@ st.markdown("""
             color: white;
             border-radius: 5px;
             padding: 10px 20px;
+            border: none;
         }
 
         .stButton>button:hover {
