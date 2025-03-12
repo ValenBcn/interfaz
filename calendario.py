@@ -30,10 +30,92 @@ CITIES = {
 current_year = datetime.datetime.now().year
 current_month = datetime.datetime.now().month
 
-# Layout de filtros
+# **Estilos CSS Mejorados**
+st.markdown(
+    """
+    <style>
+        /* Fondo de la aplicación */
+        .stApp {
+            max-width: 100% !important;
+            background-color: white !important;
+            padding: 20px;
+        }
+
+        /* Contenedor principal */
+        .block-container {
+            max-width: 100%;
+            margin: auto;
+            background: white;
+        }
+
+        /* Títulos y subtítulos */
+        h1, h2, h3, h4, h5, h6 {
+            color: #3B81F6 !important; /* Azul corporativo */
+            font-weight: bold;
+        }
+
+        /* Filtros más compactos */
+        .stSelectbox label {
+            color: black !important;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .filters-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Calendario */
+        .calendar-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .calendar-table th, .calendar-table td {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .calendar-table th {
+            background-color: #3B81F6;
+            color: white;
+        }
+
+        .holiday {
+            background-color: #FFC107 !important;
+            font-weight: bold;
+        }
+
+        /* Asegurar que los filtros se vean correctamente */
+        @media (max-width: 768px) {
+            .filters-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# **📌 Contenedor para los filtros**
+st.markdown('<div class="filters-container">', unsafe_allow_html=True)
+
 col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
 
-# Selectores
+# Selectores mejor alineados
 with col1:
     country = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
 with col2:
@@ -42,6 +124,8 @@ with col3:
     selected_year = st.selectbox("📅 Año", list(range(current_year, current_year + 5)), index=0)
 with col4:
     selected_month = st.selectbox("📆 Mes", list(calendar.month_name[1:]), index=current_month - 1)
+
+st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor de los filtros
 
 # Obtener el código del país seleccionado
 country_code = COUNTRIES[country]
@@ -55,34 +139,14 @@ holidays_by_month = [
     h for h in holidays if int(h["date"].split("-")[1]) == (list(calendar.month_name[1:]).index(selected_month) + 1)
 ]
 
-# Crear el calendario
+# **📅 Mostrar el calendario**
 st.markdown(f"### 📅 {selected_month} - {selected_year}")
 
 # Obtener la estructura del mes
 month_calendar = calendar.monthcalendar(selected_year, list(calendar.month_name[1:]).index(selected_month) + 1)
 
-# Mostrar calendario en formato tabla
+# Generar la tabla del calendario con los días festivos
 table = f"""
-<style>
-    .calendar-table {{
-        border-collapse: collapse;
-        width: 100%;
-    }}
-    .calendar-table th, .calendar-table td {{
-        border: 1px solid #ccc;
-        text-align: center;
-        padding: 8px;
-        font-size: 16px;
-    }}
-    .calendar-table th {{
-        background-color: #3B81F6;
-        color: white;
-    }}
-    .holiday {{
-        background-color: #FFC107 !important;
-        font-weight: bold;
-    }}
-</style>
 <table class="calendar-table">
 <tr>
     <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
@@ -107,7 +171,7 @@ table += "</table>"
 
 st.markdown(table, unsafe_allow_html=True)
 
-# Mostrar días festivos del mes seleccionado
+# **📌 Días festivos del mes seleccionado**
 st.markdown(f"### 📌 Días festivos en {city}")
 if holidays_by_month:
     for h in holidays_by_month:
