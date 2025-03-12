@@ -48,13 +48,14 @@ def main():
                 border-radius: 8px;
                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
                 font-family: 'Arial', sans-serif;
-                max-width: 90%;
+                width: 90%;
+                max-width: 1200px;
                 margin: auto;
-                min-height: 80px;
             }
             .header-item {
                 display: flex;
                 align-items: center;
+                justify-content: center;
                 gap: 5px;
                 background: #4C8BF5;
                 padding: 10px;
@@ -63,20 +64,28 @@ def main():
                 font-weight: bold;
                 color: white;
                 text-align: center;
-                flex: 1 1 auto;
+                flex: 1;
                 min-width: 180px;
-                max-width: 250px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            @media (min-width: 601px) {
+            @media (min-width: 801px) {
                 .header-container {
                     flex-wrap: nowrap;
                     justify-content: space-between;
                 }
             }
-            @media (max-width: 600px) {
+            @media (max-width: 800px) {
+                .header-container {
+                    flex-wrap: wrap;
+                    justify-content: center;
+                }
+                .header-item {
+                    min-width: 45%;
+                }
+            }
+            @media (max-width: 500px) {
                 .header-container {
                     flex-direction: column;
                     width: 100%;
@@ -84,7 +93,6 @@ def main():
                 }
                 .header-item {
                     width: 100%;
-                    max-width: none;
                 }
             }
         </style>
