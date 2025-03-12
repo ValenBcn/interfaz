@@ -3,7 +3,7 @@ import requests
 import json
 
 # Configuración de la API
-API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ4NDExMTkyNCwiYWFpIjoxMSwidWlkIjo3MzMxMDUyOCwiaWFkIjoiMjAyNS0wMy0xMVQxNzo1NToyNS4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6Mjg0ODc4MzgsInJnbiI6ImV1YzEifQ.Pp_UNPi-wRC1Y9yxFEQ_Rs9VC2J78QLjK58x7puQBAM"  # Reemplaza con tu clave
+API_KEY = "TU_API_KEY"
 BOARD_ID = "1863450371"  # ID del tablero HR
 API_URL = "https://api.monday.com/v2"
 
@@ -76,13 +76,13 @@ st.markdown(
 
         /* Títulos y subtítulos */
         h1, h2, h3, h4, h5, h6 {
-            color: #3B81F6 !important; /* Azul corporativo */
+            color: #3B81F6 !important;
             font-weight: bold;
         }
 
         /* Selectbox - Fondo Azul Tenue y Texto Negro */
         div[data-testid="stWidgetLabel"] label {
-            color: black !important; /* Título en negro */
+            color: black !important;
             font-weight: bold;
         }
 
@@ -175,4 +175,9 @@ for task in tasks:
     <div class="task-card">
         <h3>📝 {task_name}</h3>
         <p>📅 <strong>Inicio:</strong> {start_date} | ⏳ <strong>Vencimiento:</strong> {due_date}</p>
-        <p>🔴 <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</
+        <p>🔴 <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</p>
+        <p>📝 <strong>Notas:</strong> {notes if notes else "No definido"}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor del scroll
