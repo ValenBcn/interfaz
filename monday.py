@@ -63,27 +63,92 @@ status_options = list(set(status_mapping.get(json.loads(task["column_values"][1]
                           for task in tasks if task["column_values"][1]["value"]))
 status_options.insert(0, "Todos")  # Agregar opción "Todos" al inicio
 
-# **Filtro de estado**
-selected_status = st.selectbox("📌 Filtrar por estado:", status_options)
-
-# **Contenedor con scroll**
+# **Aplicar Estilos Globales**
 st.markdown(
     """
     <style>
+        /* Fondo blanco y alineación general */
+        .stApp {
+            max-width: 100% !important;
+            background-color: white !important;
+            padding: 20px;
+        }
+
+        /* Contenedor principal */
+        .block-container {
+            max-width: 100%;
+            margin: auto;
+            background: white;
+        }
+
+        /* Títulos y subtítulos */
+        h1, h2, h3, h4, h5, h6 {
+            color: #3B81F6 !important; /* Azul corporativo */
+            font-weight: bold;
+        }
+
+        /* Bordes y mejoras en alertas */
+        .stAlert {
+            border-left: 5px solid #3B81F6 !important;
+            background-color: #f0f4ff !important;
+            padding: 15px;
+        }
+
+        /* Botones personalizados */
+        .stButton>button {
+            background-color: #3B81F6 !important;
+            color: white !important;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        /* Select box */
+        .stSelectbox label {
+            color: black !important; /* Texto en negro */
+            font-weight: bold;
+        }
+
+        /* Contenedor con scroll para tareas */
         .scroll-container {
-            max-height: 400px; /* Altura fija */
-            overflow-y: auto;  /* Scroll vertical */
+            max-height: 400px;
+            overflow-y: auto;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
             background-color: #f8f9fa;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tarjeta de tarea */
+        .task-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #3B81F6;
+        }
+
+        /* Texto negro en tareas */
+        .task-card * {
+            color: black !important;
+        }
+
+        /* Links */
+        a {
+            color: #3B81F6 !important;
+            text-decoration: none;
         }
     </style>
-    """, unsafe_allow_html=True
+    """,
+    unsafe_allow_html=True
 )
 
+# **Filtro de estado**
+selected_status = st.selectbox("📌 Filtrar por estado:", status_options)
+
 # **Título con link al board**
-st.markdown(f'<div class="main-container"><h2>📋 <a href="https://datatobe.monday.com/boards/{BOARD_ID}" target="_blank" style="color: white; text-decoration: none;">Tareas en {board_name}</a></h2></div>', unsafe_allow_html=True)
+st.markdown(f'<h2>📋 <a href="https://datatobe.monday.com/boards/{BOARD_ID}" target="_blank">Tareas en {board_name}</a></h2>', unsafe_allow_html=True)
 
 # **Contenedor con scroll**
 st.markdown('<div class="scroll-container">', unsafe_allow_html=True)
@@ -104,13 +169,14 @@ for task in tasks:
     if selected_status != "Todos" and status != selected_status:
         continue
 
-    # **Mostrar tarea**
+    # **Mostrar tarea en un contenedor estilizado**
     st.markdown(f"""
-    ### 📝 {task_name}
-    - 📅 **Inicio:** {start_date} | ⏳ **Vencimiento:** {due_date}
-    - 🔴 **Estado:** {status} | ⭐ **Prioridad:** {priority}
-    - 📝 **Notas:** {notes if notes else "No definido"}
-    ---
-    """)
+    <div class="task-card">
+        <h3>📝 {task_name}</h3>
+        <p>📅 <strong>Inicio:</strong> {start_date} | ⏳ <strong>Vencimiento:</strong> {due_date}</p>
+        <p>🔴 <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</p>
+        <p>📝 <strong>Notas:</strong> {notes if notes else "No definido"}</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor del scroll
