@@ -41,31 +41,26 @@ st.markdown(
             padding: 20px;
         }
 
-        /* Contenedor de filtros mejor distribuido */
-        .filters-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 10px;
+        /* Contenedor de días festivos */
+        .holidays-container {
             background: #f8f9fa;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
         }
 
-        /* Asegurar que los títulos de los selectores sean negros */
-        div[data-testid="stWidgetLabel"] label {
-            color: black !important;
-            font-weight: bold;
+        .holidays-title {
             font-size: 16px;
+            font-weight: bold;
+            color: black !important;
+            text-align: center;
+            margin-bottom: 5px;
         }
 
-        /* Mejor distribución de los selectores */
-        .filters-container select {
-            width: 100% !important;
-            height: 40px;
+        .holiday-item {
             font-size: 14px;
+            color: black !important;
+            padding: 3px 0;
         }
 
         /* Calendario mejorado */
@@ -102,60 +97,44 @@ st.markdown(
             color: black !important;
         }
 
-        /* Contenedor de días festivos */
-        .holidays-container {
+        /* Contenedor de filtros MOVIDO ABAJO */
+        .filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
             background: #f8f9fa;
-            padding: 10px;
+            padding: 15px;
             border-radius: 8px;
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .holidays-title {
-            font-size: 16px;
+        /* Títulos de los filtros en negro */
+        div[data-testid="stWidgetLabel"] label {
+            color: black !important;
             font-weight: bold;
-            color: black !important;
-            text-align: center;
-            margin-bottom: 5px;
+            font-size: 16px;
         }
 
-        .holiday-item {
+        /* Ajustar tamaño de los selectores */
+        .filters-container select {
+            width: 100% !important;
+            height: 40px;
             font-size: 14px;
-            color: black !important;
-            padding: 3px 0;
         }
 
-        /* Ajuste del tamaño del calendario en móviles */
-        @media (max-width: 768px) {
-            .filters-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .calendar-table {
-                font-size: 12px;
-            }
-        }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# **📌 Contenedor para los filtros en 2 columnas**
-st.markdown('<div class="filters-container">', unsafe_allow_html=True)
-
-col1, col2 = st.columns(2)
-
-with col1:
-    country = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
-    selected_year = st.selectbox("📅 Año", list(range(current_year, current_year + 5)), index=0)
-
-with col2:
-    city = st.selectbox("🏙️ Ciudad", CITIES[country], index=0)
-    selected_month = st.selectbox("📆 Mes", list(calendar.month_name[1:]), index=current_month - 1)
-
-st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor de los filtros
-
 # Obtener el código del país seleccionado
+country = "España"  # Valor por defecto
+city = "Madrid"
+selected_year = current_year
+selected_month = list(calendar.month_name[1:])[current_month - 1]
+
 country_code = COUNTRIES[country]
 
 # Obtener los días festivos del año seleccionado
@@ -167,8 +146,7 @@ holidays_by_month = [
     h for h in holidays if int(h["date"].split("-")[1]) == (list(calendar.month_name[1:]).index(selected_month) + 1)
 ]
 
-# **📅 Mostrar el calendario dentro de un contenedor más compacto**
-st.markdown('<div class="calendar-section">', unsafe_allow_html=True)
+# **📅 Mostrar el calendario**
 st.markdown(f'<div class="calendar-title">📅 {selected_month} - {selected_year}</div>', unsafe_allow_html=True)
 
 # Obtener la estructura del mes
@@ -200,8 +178,6 @@ table += "</table>"
 
 st.markdown(table, unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor del calendario
-
 # **📌 Días festivos del mes seleccionado**
 st.markdown('<div class="holidays-container">', unsafe_allow_html=True)
 st.markdown(f'<div class="holidays-title">📌 Días festivos en {city}</div>', unsafe_allow_html=True)
@@ -213,3 +189,18 @@ else:
     st.markdown('<div class="holiday-item">No hay días festivos en este mes.</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor de días festivos
+
+# **📌 Contenedor de filtros MOVIDO DEBAJO DEL CALENDARIO**
+st.markdown('<div class="filters-container">', unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    country = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
+    selected_year = st.selectbox("📅 Año", list(range(current_year, current_year + 5)), index=0)
+
+with col2:
+    city = st.selectbox("🏙️ Ciudad", CITIES[country], index=0)
+    selected_month = st.selectbox("📆 Mes", list(calendar.month_name[1:]), index=current_month - 1)
+
+st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor de los filtros
