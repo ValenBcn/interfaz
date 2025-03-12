@@ -6,7 +6,7 @@ import pandas as pd
 import time
 
 # Configuración del servidor IMAP
-IMAP_SERVER = "mail.tudominio.com"  # Cambia esto por tu servidor IMAP
+IMAP_SERVER = "mail.datatobe.com"  # Cambia esto por tu servidor IMAP
 IMAP_PORT = 993  # IMAP seguro por SSL
 
 st.title("📧 Bandeja de Entrada")
