@@ -133,7 +133,7 @@ st.markdown(
 )
 
 # **📌 Contenedor de filtro de país**
-st.markdown('<div class="filters-container">', unsafe_allow_html=True)
+#st.markdown('<div class="filters-container">', unsafe_allow_html=True)
 country = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
 st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor del filtro
 
