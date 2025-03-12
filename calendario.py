@@ -66,13 +66,13 @@ st.markdown(
         
         /* Ajuste del ancho de los selectores */
         .filters-container select {
-            width: 150px !important;  /* Cambia el valor para ajustar */
+            width: 120px !important;  /* Cambia el valor para ajustar */
             height: 36px;
             font-size: 14px;
         }
 
         .stSelectbox {
-            width: 150px !important;  /* Cambia el valor para ajustar */
+            width: 120px !important;  /* Cambia el valor para ajustar */
         }
 
         /* Mejor distribución entre filtros y calendario */
