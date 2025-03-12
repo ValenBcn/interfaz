@@ -16,68 +16,68 @@ def get_user_location():
 
 def get_weather(lat, lon):
     try:
-        weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=auto"
+        weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true&daily=weathercode&timezone=auto"
         response = requests.get(weather_url)
         weather_data = response.json()
         temp = weather_data.get("current_weather", {}).get("temperature", "No disponible")
-        forecast_max = weather_data.get("daily", {}).get("temperature_2m_max", ["No disponible"])[0]
-        forecast_min = weather_data.get("daily", {}).get("temperature_2m_min", ["No disponible"])[0]
-        return temp, forecast_max, forecast_min
+        forecast_code = weather_data.get("daily", {}).get("weathercode", ["No disponible"])[0]
+        return temp, forecast_code
     except:
-        return "No disponible", "No disponible", "No disponible"
+        return "No disponible", "No disponible"
+
+def get_weather_description(code, lang):
+    descriptions = {
+        "es": {"No disponible": "No disponible", "0": "Despejado", "1": "Parcialmente nublado", "2": "Nublado", "3": "Lluvia"},
+        "en": {"No disponible": "Not available", "0": "Clear", "1": "Partly cloudy", "2": "Cloudy", "3": "Rain"},
+        "de": {"No disponible": "Nicht verfügbar", "0": "Klar", "1": "Teilweise bewölkt", "2": "Bewölkt", "3": "Regen"},
+        "ca": {"No disponible": "No disponible", "0": "Clar", "1": "Parcialment ennuvolat", "2": "Ennuvolat", "3": "Pluja"}
+    }
+    return descriptions.get(lang, descriptions["es"]).get(str(code), "No disponible")
 
 def main():
+    st.set_page_config(layout="wide")
     city, country, lat, lon = get_user_location()
-    temp, forecast_max, forecast_min = get_weather(lat, lon)
+    temp, forecast_code = get_weather(lat, lon)
     now = datetime.datetime.now()
     formatted_date = now.strftime("%A, %d %B %Y")
-    formatted_time = now.strftime("%I:%M %p")
     
-    st.markdown(
-        """
-        <style>
-            .header-container {
-                align-items: center;
-                gap: 15px;
-                padding: 15px;
-                background: #3B81F6;
-                color: white;
-                border-radius: 8px;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-                font-family: 'Arial', sans-serif;
-            }
-            .header-item {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 5px;
-                background: #4C8BF5;
-                padding: 10px;
-                border-radius: 8px;
-                font-size: 16px;
-                font-weight: bold;
-                color: white;
-                text-align: center;
-                flex: 1;
-                min-width: 180px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    lang_options = {"Español": "es", "English": "en", "Deutsch": "de", "Català": "ca"}
+    lang_selected = st.selectbox("Selecciona un idioma / Select a language:", list(lang_options.keys()))
+    lang = lang_options[lang_selected]
+    
+    weather_description = get_weather_description(forecast_code, lang)
+    
+    messages = {
+        "es": f"Hola, hoy es {formatted_date}, el clima actual en {city} es de {temp}°C y esperamos que el día sea {weather_description} en las próximas horas.",
+        "en": f"Hello, today is {formatted_date}, the current weather in {city} is {temp}°C and we expect the day to be {weather_description} in the next few hours.",
+        "de": f"Hallo, heute ist {formatted_date}, das aktuelle Wetter in {city} beträgt {temp}°C und wir erwarten, dass der Tag in den nächsten Stunden {weather_description} sein wird.",
+        "ca": f"Hola, avui és {formatted_date}, el clima actual a {city} és de {temp}°C i esperem que el dia sigui {weather_description} en les pròximes hores."
+    }
     
     st.markdown(
         f"""
-        <div class='header-container'>
-            <div class='header-item'>&#x1F4CD; Ciudad: {city}, {country}</div>
-            <div class='header-item'>&#x1F4C5; Fecha: {formatted_date}</div>
-            <div class='header-item'>&#x23F0; Hora Local: {formatted_time}</div>
-            <div class='header-item'>&#x1F321; Temperatura: {temp}°C</div>
-            <div class='header-item'>&#x1F52E; Previsión: Máx: {forecast_max}°C / Mín: {forecast_min}°C</div>
-        </div>
+        <style>
+            .weather-container {{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #3B81F6;
+                color: white;
+                padding: 15px;
+                border-radius: 8px;
+                font-size: 18px;
+                font-family: 'Arial', sans-serif;
+                width: calc(100% - 40px);
+                margin: auto;
+                text-align: center;
+            }}
+            @media (max-width: 600px) {{
+                .weather-container {{
+                    font-size: 14px;
+                }}
+            }}
+        </style>
+        <div class='weather-container'>{messages[lang]}</div>
         """,
         unsafe_allow_html=True
     )
