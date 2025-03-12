@@ -121,6 +121,8 @@ st.markdown(
         /* Ajustar tamaño de los selectores */
         .filters-container select {
             width: 100% !important;
+            background: white;
+            font-color: black;
             height: 40px;
             font-size: 14px;
         }
