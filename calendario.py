@@ -1,59 +1,122 @@
 import streamlit as st
 import requests
+import json
 import datetime
 import calendar
 
-# Configuración del diseño de la página
-title_color = "#3B81F6"  # Azul corporativo
-st.markdown(f"""
+# 🎨 Configuración de colores
+PRIMARY_COLOR = "#3B81F6"
+SECONDARY_COLOR = "#f7f8ff"
+
+# 📅 API gratuita para días festivos
+HOLIDAY_API = "https://date.nager.at/api/v3/PublicHolidays"
+
+# 🌍 API para obtener países
+COUNTRIES_API = "https://restcountries.com/v3.1/all"
+
+# 🚀 Obtener lista de países
+@st.cache_data
+def get_countries():
+    try:
+        response = requests.get(COUNTRIES_API)
+        if response.status_code == 200:
+            countries = response.json()
+            return sorted([(c["name"]["common"], c["cca2"]) for c in countries if "cca2" in c])
+    except Exception as e:
+        st.error("⚠️ No se pudieron cargar los países.")
+        return []
+    return []
+
+# 📅 Obtener días festivos
+@st.cache_data
+def get_holidays(year, country_code):
+    try:
+        response = requests.get(f"{HOLIDAY_API}/{year}/{country_code}")
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        st.error("⚠️ No se pudieron obtener los días festivos.")
+        return []
+    return []
+
+# 🎨 Estilos personalizados
+st.markdown(
+    f"""
     <style>
-        .title-text {{ color: {title_color}; text-align: center; font-size: 24px; font-weight: bold; }}
-        .calendar-container {{ text-align: center; }}
+        .calendar-container {{
+            background-color: {SECONDARY_COLOR};
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            color: black;
+            text-align: center;
+        }}
+        h2 {{
+            color: {PRIMARY_COLOR};
+            text-align: center;
+        }}
+        .holiday {{
+            background-color: #FFCC00 !important;
+            color: black;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 5px;
+        }}
     </style>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
-st.markdown('<h2 class="title-text">📅 Calendario Laboral</h2>', unsafe_allow_html=True)
+# 📌 Encabezado
+st.markdown(f'<h2>📅 Calendario Laboral</h2>', unsafe_allow_html=True)
 
-# Obtener lista de países de la API
-country_api = "https://date.nager.at/Api/v2/AvailableCountries"
-countries_response = requests.get(country_api).json()
+# 🌍 Seleccionar país
+countries = get_countries()
+if countries:
+    country_name, country_code = st.selectbox("Selecciona un país", countries, index=30)
+else:
+    st.error("No se pudieron cargar los países. Inténtalo más tarde.")
 
-# Diccionario para seleccionar países
-countries = {country['key']: country['value'] for country in countries_response}
-selected_country = st.selectbox("Selecciona un país", list(countries.keys()), format_func=lambda x: countries[x])
+# 📆 Seleccionar año
+current_year = datetime.datetime.now().year
+year = st.selectbox("Selecciona el año", list(range(current_year, current_year + 3)))
 
-# Obtener el año actual y mes actual
-year = datetime.datetime.now().year
-month = datetime.datetime.now().month
+# 📅 Obtener días festivos
+if country_code:
+    holidays = get_holidays(year, country_code)
+    holiday_dates = {datetime.datetime.strptime(h["date"], "%Y-%m-%d").day: h["localName"] for h in holidays}
 
-# Obtener los días festivos para el país seleccionado
-holiday_api = f"https://date.nager.at/Api/v2/PublicHolidays/{year}/{selected_country}"
-holidays_response = requests.get(holiday_api).json()
+    # 📆 Mostrar calendario
+    st.markdown('<div class="calendar-container">', unsafe_allow_html=True)
+    st.markdown(f"### {calendar.month_name[datetime.datetime.now().month]} {year}")
 
-# Formatear los días festivos
-holidays = {datetime.datetime.strptime(holiday['date'], '%Y-%m-%d').date(): holiday['localName'] for holiday in holidays_response}
+    cal = calendar.TextCalendar()
+    month_days = cal.monthdayscalendar(year, datetime.datetime.now().month)
 
-# Crear el calendario en Streamlit
-st.write(f"### {calendar.month_name[month]} {year}")
-cal = calendar.Calendar()
+    table = "<table style='width:100%; text-align:center;'><tr>"
+    for day in ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]:
+        table += f"<th>{day}</th>"
+    table += "</tr>"
 
-days_grid = ""  # Generar una tabla para mostrar el calendario
-for week in cal.monthdatescalendar(year, month):
-    days_grid += "<tr>"
-    for day in week:
-        if day.month == month:
-            color = "background-color: #f0f0f0;"  # Fondo normal
-            if day in holidays:
-                color = "background-color: #3B81F6; color: white; font-weight: bold;"  # Resaltar festivos
-            days_grid += f'<td style="padding:10px; {color}">{day.day}</td>'
-        else:
-            days_grid += '<td></td>'  # Espacio vacío para días fuera del mes
-    days_grid += "</tr>"
+    for week in month_days:
+        table += "<tr>"
+        for day in week:
+            if day == 0:
+                table += "<td></td>"
+            elif day in holiday_dates:
+                table += f"<td class='holiday'>{day}</td>"
+            else:
+                table += f"<td>{day}</td>"
+        table += "</tr>"
+    
+    table += "</table>"
+    st.markdown(table, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# Mostrar el calendario en Streamlit
-st.markdown(f"""
-<table style="width:100%; text-align: center; border-collapse: collapse;">
-    <tr>{''.join([f'<th style="padding:10px; border-bottom: 2px solid {title_color};">{day}</th>' for day in ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']])}</tr>
-    {days_grid}
-</table>
-""", unsafe_allow_html=True)
+# 📜 Mostrar lista de días festivos
+if holidays:
+    st.markdown("### 📌 Días festivos")
+    for h in holidays:
+        st.markdown(f"🗓️ **{h['date']}** - {h['localName']}")
+else:
+    st.warning("No se encontraron días festivos para este país y año.")
