@@ -2,67 +2,47 @@ import imaplib
 import email
 from email.header import decode_header
 import streamlit as st
-import pandas as pd
 
 # Configuración del servidor IMAP
-IMAP_SERVER = "mail.datatobe.com"  # Cambia esto por tu servidor IMAP
-IMAP_PORT = 993  # Puerto seguro SSL
+IMAP_SERVER = "mail.datatobe.com"  # Servidor IMAP
+IMAP_PORT = 993  # Puerto SSL seguro
 
-# Aplicar estilo CSS para colores y responsividad
+# Estilo CSS para mejorar la visualización
 st.markdown("""
     <style>
-        /* Contenedor principal */
-        .main-container {
-            max-width: 100%; /* Ajusta el ancho completo */
-            padding: 0px;
+        .email-list {
+            border-right: 2px solid #ddd;
+            overflow-y: auto;
+            max-height: 500px;
         }
-
-        /* Ajusta la tabla */
-        .email-table {
-            width: 100%;
-            overflow-x: auto;  /* Scroll horizontal si es necesario */
-            white-space: nowrap;
-        }
-
-        .email-table table {
-            width: 100%;
-            min-width: 1000px; /* Hace que la tabla sea más ancha */
-            border-collapse: collapse;
-        }
-
-        .email-table th {
-            background-color: #3B81F6; /* Azul corporativo */
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-
-        .email-table td {
+        .email-item {
             padding: 10px;
             border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-
-        /* Asegurar responsividad */
-        @media (max-width: 768px) {
-            .email-table {
-                overflow-x: scroll;
-            }
+        .email-item:hover {
+            background: #f3f3f3;
         }
-
-        /* Ajusta el ancho del cuerpo de Streamlit */
-        .stApp {
-            max-width: 100%;
-            padding: 0px;
-            margin: auto;
+        .email-selected {
+            background: #d9e6fd !important;
+        }
+        .email-body {
+            padding: 15px;
+            background: #fff;
+            border-left: 2px solid #ddd;
+            max-height: 500px;
+            overflow-y: auto;
         }
     </style>
 """, unsafe_allow_html=True)
 
-#st.title("📧 Bandeja de Entrada")
+st.title("📧 Bandeja de Entrada")
 
 # Variables de sesión
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+    st.session_state.selected_email = None  # Variable para almacenar el correo seleccionado
 
 if not st.session_state.logged_in:
     email_user = st.text_input("📩 Correo Electrónico:", placeholder="usuario@tudominio.com")
@@ -79,20 +59,20 @@ if not st.session_state.logged_in:
         except imaplib.IMAP4.error as e:
             st.error(f"❌ Error de autenticación: {e}")
 
-# Si ya inició sesión, mostrar correos en tabla responsiva
+# Si ya inició sesión, mostrar correos
 if st.session_state.logged_in:
     st.success(f"✅ Conectado como [{st.session_state.email_user}](mailto:{st.session_state.email_user})")
 
     try:
         mail = st.session_state.mail
-        mail.select("INBOX")  
+        mail.select("INBOX")
 
         # Buscar los últimos 10 correos
         status, messages = mail.search(None, "ALL")
         mail_ids = messages[0].split()
 
         if mail_ids:
-            data = []
+            emails = []
             for mail_id in reversed(mail_ids[-10:]):  
                 _, msg_data = mail.fetch(mail_id, "(RFC822)")
                 for response_part in msg_data:
@@ -105,7 +85,7 @@ if st.session_state.logged_in:
                             subject = subject.decode(encoding or "utf-8")
                         date = msg["Date"]
 
-                        # Extraer 500 caracteres del cuerpo del email
+                        # Extraer cuerpo del email
                         body = ""
                         if msg.is_multipart():
                             for part in msg.walk():
@@ -115,16 +95,30 @@ if st.session_state.logged_in:
                         else:
                             body = msg.get_payload(decode=True).decode(errors="ignore")
 
-                        body_extract = body[:500] + "..." if len(body) > 500 else body  
+                        emails.append({"Fecha": date, "Asunto": subject, "Remitente": sender, "Cuerpo": body, "ID": mail_id})
 
-                        data.append({"Fecha": date, "Asunto": subject, "Remitente": sender, "Extracto": body_extract})
+            # Crear Layout en columnas (Izquierda: Lista de correos | Derecha: Cuerpo del correo seleccionado)
+            col1, col2 = st.columns([2, 3])
 
-            df = pd.DataFrame(data)
+            # 📌 **Columna 1 - Lista de correos**
+            with col1:
+                st.subheader("📥 Correos Recibidos")
+                for email_data in emails:
+                    button_key = f"email_{email_data['ID']}"
+                    if st.button(f"✉️ {email_data['Asunto']} - {email_data['Remitente']}", key=button_key):
+                        st.session_state.selected_email = email_data
 
-            # Contenedor responsivo para la tabla
-            st.markdown('<div class="email-table">', unsafe_allow_html=True)
-            st.dataframe(df, use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            # 📌 **Columna 2 - Cuerpo del correo seleccionado**
+            with col2:
+                if st.session_state.selected_email:
+                    email_selected = st.session_state.selected_email
+                    st.subheader(f"📜 {email_selected['Asunto']}")
+                    st.write(f"**De:** {email_selected['Remitente']}")
+                    st.write(f"**Fecha:** {email_selected['Fecha']}")
+                    st.write("---")
+                    st.write(email_selected["Cuerpo"])
+                else:
+                    st.info("Selecciona un correo para leerlo.")
 
         else:
             st.info("📭 No tienes correos nuevos.")
