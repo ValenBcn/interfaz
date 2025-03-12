@@ -30,42 +30,23 @@ CITIES = {
 current_year = datetime.datetime.now().year
 current_month = datetime.datetime.now().month
 
-# **Estilos CSS Mejorados**
+# **📌 Estilos CSS Mejorados**
 st.markdown(
     """
     <style>
-        /* Fondo de la aplicación */
+        /* Fondo general */
         .stApp {
             max-width: 100% !important;
             background-color: white !important;
             padding: 20px;
         }
 
-        /* Contenedor principal */
-        .block-container {
-            max-width: 100%;
-            margin: auto;
-            background: white;
-        }
-
-        /* Títulos y subtítulos */
-        h1, h2, h3, h4, h5, h6 {
-            color: #3B81F6 !important; /* Azul corporativo */
-            font-weight: bold;
-        }
-
-        /* Filtros más compactos */
-        .stSelectbox label {
-            color: black !important;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
+        /* Contenedor de filtros mejor alineado */
         .filters-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             padding: 10px;
             background: #f8f9fa;
             border-radius: 8px;
@@ -73,18 +54,32 @@ st.markdown(
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Calendario */
+        /* Tamaño de fuente de los selectores */
+        .stSelectbox label {
+            color: black !important;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Calendario mejorado */
+        .calendar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
         .calendar-table {
             border-collapse: collapse;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 10px;
+            font-size: 16px;
         }
 
         .calendar-table th, .calendar-table td {
             border: 1px solid #ccc;
             text-align: center;
             padding: 10px;
-            font-size: 16px;
         }
 
         .calendar-table th {
@@ -95,13 +90,18 @@ st.markdown(
         .holiday {
             background-color: #FFC107 !important;
             font-weight: bold;
+            color: black !important;
         }
 
-        /* Asegurar que los filtros se vean correctamente */
+        /* Ajustar el tamaño del calendario en móviles */
         @media (max-width: 768px) {
             .filters-container {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+
+            .calendar-table {
+                font-size: 12px;
             }
         }
 
@@ -147,6 +147,7 @@ month_calendar = calendar.monthcalendar(selected_year, list(calendar.month_name[
 
 # Generar la tabla del calendario con los días festivos
 table = f"""
+<div class="calendar-container">
 <table class="calendar-table">
 <tr>
     <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
@@ -167,7 +168,7 @@ for week in month_calendar:
             table += f"<td>{day}</td>"
     table += "</tr>"
 
-table += "</table>"
+table += "</table></div>"
 
 st.markdown(table, unsafe_allow_html=True)
 
