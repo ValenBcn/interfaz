@@ -14,6 +14,8 @@ st.title("📧 Bandeja de Entrada")
 # Variables de sesión
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+if "selected_email" not in st.session_state:
+    st.session_state.selected_email = None
 
 if not st.session_state.logged_in:
     # Campos de login
@@ -35,50 +37,78 @@ if not st.session_state.logged_in:
 if st.session_state.logged_in:
     st.success(f"✅ Conectado como {st.session_state.email_user}")
 
-    # Refrescar cada 60 segundos
-    while True:
-        try:
-            mail = st.session_state.mail
-            mail.select("INBOX")  # Seleccionar bandeja de entrada
+    # Contenedor de layout: dividir en 2 columnas
+    col1, col2 = st.columns([2, 3])  # 2: lista de correos, 3: contenido del correo
 
-            # Buscar todos los correos (puedes cambiar a UNSEEN si solo quieres los no leídos)
-            status, messages = mail.search(None, "ALL")
+    with col1:
+        st.subheader("📩 Correos Recibidos")
+        
+        while True:
+            try:
+                mail = st.session_state.mail
+                mail.select("INBOX")  # Seleccionar bandeja de entrada
 
-            mail_ids = messages[0].split()
+                # Buscar todos los correos (cambiar "ALL" a "UNSEEN" si solo quieres no leídos)
+                status, messages = mail.search(None, "ALL")
 
-            # Si hay correos
-            if mail_ids:
-                st.write(f"📩 **Mostrando últimos {min(len(mail_ids), 10)} correos**")
+                mail_ids = messages[0].split()
 
-                data = []
+                if mail_ids:
+                    data = []
+                    mail_map = {}
 
-                for mail_id in reversed(mail_ids[-10:]):  # Muestra los 10 más recientes
-                    _, msg_data = mail.fetch(mail_id, "(RFC822)")
-                    for response_part in msg_data:
-                        if isinstance(response_part, tuple):
-                            msg = email.message_from_bytes(response_part[1])
+                    for mail_id in reversed(mail_ids[-10:]):  # Últimos 10 correos
+                        _, msg_data = mail.fetch(mail_id, "(RFC822)")
+                        for response_part in msg_data:
+                            if isinstance(response_part, tuple):
+                                msg = email.message_from_bytes(response_part[1])
 
-                            # Obtener remitente y asunto
-                            sender = msg["From"]
-                            subject, encoding = decode_header(msg["Subject"])[0]
-                            if isinstance(subject, bytes):
-                                subject = subject.decode(encoding or "utf-8")
+                                # Obtener remitente, asunto y fecha
+                                sender = msg["From"]
+                                subject, encoding = decode_header(msg["Subject"])[0]
+                                if isinstance(subject, bytes):
+                                    subject = subject.decode(encoding or "utf-8")
+                                date = msg["Date"]
 
-                            # Obtener fecha
-                            date = msg["Date"]
+                                # Guardar referencia del email
+                                mail_map[subject] = msg
 
-                            # Agregar a la lista de datos
-                            data.append([date, subject, sender])
+                                # Agregar a la lista
+                                data.append([date, subject, sender])
 
-                # Convertir en DataFrame y mostrar en tabla
-                df = pd.DataFrame(data, columns=["📅 Fecha", "📨 Asunto", "🏷️ Remitente"])
-                st.dataframe(df, use_container_width=True)
+                    # Convertir en DataFrame
+                    df = pd.DataFrame(data, columns=["📅 Fecha", "📨 Asunto", "🏷️ Remitente"])
+                    selected = st.selectbox("Selecciona un correo:", df["📨 Asunto"].tolist(), key="email_select")
 
+                    # Almacenar el correo seleccionado en la sesión
+                    if selected:
+                        st.session_state.selected_email = mail_map[selected]
+
+                else:
+                    st.info("📭 No tienes correos nuevos.")
+
+            except Exception as e:
+                st.error(f"⚠️ Error al recuperar los correos: {str(e)}")
+
+            time.sleep(60)  # Refrescar cada minuto
+            st.rerun()
+
+    # **📬 Contenedor de correo seleccionado**
+    with col2:
+        if st.session_state.selected_email:
+            st.subheader("📄 Contenido del correo")
+            email_msg = st.session_state.selected_email
+
+            # Decodificar el cuerpo del mensaje
+            body = ""
+            if email_msg.is_multipart():
+                for part in email_msg.walk():
+                    content_type = part.get_content_type()
+                    if content_type == "text/plain":
+                        body = part.get_payload(decode=True).decode()
+                        break
             else:
-                st.info("📭 No tienes correos nuevos.")
+                body = email_msg.get_payload(decode=True).decode()
 
-        except Exception as e:
-            st.error(f"⚠️ Error al recuperar los correos: {str(e)}")
-
-        time.sleep(60)  # Espera 1 minuto antes de actualizar
-        st.rerun()  # Refrescar automáticamente
+            # Mostrar contenido
+            st.text_area("📜 Contenido:", body, height=300)
