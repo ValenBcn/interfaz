@@ -33,7 +33,8 @@ def main():
     formatted_date = now.strftime("%A, %d %B %Y")
     formatted_time = now.strftime("%I:%M %p")
     
-    st.markdown("""
+    st.markdown(
+        """
         <style>
             .header-container {
                 display: flex;
@@ -71,9 +72,12 @@ def main():
                 }
             }
         </style>
-    ", unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
     
-    st.markdown(f"""
+    st.markdown(
+        f"""
         <div class='header-container'>
             <div class='header-item'>&#x1F4CD; Ciudad: {city}, {country}</div>
             <div class='header-item'>&#x1F4C5; Fecha: {formatted_date}</div>
@@ -81,7 +85,9 @@ def main():
             <div class='header-item'>&#x1F321; Temperatura: {temp}°C</div>
             <div class='header-item'>&#x1F52E; Previsión: Máx: {forecast_max}°C / Mín: {forecast_min}°C</div>
         </div>
-    """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
 if __name__ == "__main__":
     main()
