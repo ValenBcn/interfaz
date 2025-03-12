@@ -103,7 +103,8 @@ st.markdown(
             flex-wrap: wrap;
             justify-content: space-between;
             gap: 10px;
-            background: #f8f9fa;
+            background: white;
+            font-color: black;
             padding: 15px;
             border-radius: 8px;
             margin-top: 15px;
