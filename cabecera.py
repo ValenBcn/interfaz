@@ -39,7 +39,7 @@ def main():
             .header-container {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: center;
+                justify-content: space-between;
                 align-items: center;
                 gap: 10px;
                 padding: 10px;
@@ -62,8 +62,9 @@ def main():
                 text-align: center;
                 flex: 1;
                 min-width: 150px;
+                white-space: nowrap;
             }
-            @media (max-width: 600px) {
+            @media (max-width: 800px) {
                 .header-container {
                     flex-direction: column;
                 }
