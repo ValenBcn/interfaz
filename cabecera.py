@@ -26,25 +26,6 @@ def get_weather(lat, lon):
     except:
         return "No disponible", "No disponible", "No disponible"
 
-def get_city_image(city):
-    try:
-        search_url = f"https://api.unsplash.com/photos/random?query={city}&client_id=nFBMuleltXyzgXF-Yw-Bf-VqVhgau0iSU7Ow0O3AM_k"
-        response = requests.get(search_url)
-        image_data = response.json()
-        return image_data['urls']['regular']
-    except:
-        return None
-
-def get_news(city):
-    try:
-        search_url = f"https://newsapi.org/v2/everything?q={city}&sortBy=publishedAt&apiKey=a3f76feb16d14ec4ad3541ae1ee4d931"
-        response = requests.get(search_url)
-        news_data = response.json()
-        articles = news_data.get('articles', [])[:3]  # Obtener las 3 primeras noticias
-        return articles
-    except:
-        return []
-
 def main():
     st.markdown("""
         <style>
@@ -91,8 +72,8 @@ def main():
     formatted_date = now.strftime("%A, %d %B %Y")
     formatted_time = now.strftime("%I:%M %p")
     
-    # Detectar si el usuario está en móvil o desktop
-    is_mobile = st.experimental_get_query_params().get("device", ["desktop"])[0] == "mobile"
+    # Detectar tamaño de pantalla
+    is_mobile = st.query_params.get("device", ["desktop"])[0] == "mobile"
     
     st.markdown('<div class="weather-container">', unsafe_allow_html=True)
     st.markdown(f"<div class='weather-item'><span>📍</span> Ciudad: {city}, {country}</div>", unsafe_allow_html=True)
@@ -103,17 +84,12 @@ def main():
     st.markdown('</div>', unsafe_allow_html=True)
     
     if not is_mobile:
-        city_image = get_city_image(city)
-        if city_image:
-            st.image(city_image, caption=f"Vista de {city}", use_column_width=True)
+        st.markdown("<h3 style='color: white; text-align: center;'>Vista de la ciudad</h3>", unsafe_allow_html=True)
+        st.image(f"https://source.unsplash.com/600x400/?{city}", caption=f"Vista de {city}", use_container_width=True)
         
-        news = get_news(city)
-        if news:
-            st.markdown('<div class="news-container"><h3>📰 Noticias recientes</h3>', unsafe_allow_html=True)
-            for article in news:
-                st.markdown(f"<p><a href='{article['url']}' target='_blank'>{article['title']}</a></p>", unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("<h3 style='color: white; text-align: center;'>Noticias recientes</h3>", unsafe_allow_html=True)
+        news_url = f"https://news.google.com/search?q={city}&hl=es&gl=ES&ceid=ES:es"
+        st.markdown(f"<a href='{news_url}' target='_blank' style='color: #FFD700; text-decoration: none;'>Ver noticias sobre {city}</a>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
-
