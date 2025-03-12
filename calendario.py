@@ -6,7 +6,7 @@ import calendar
 # API para obtener los días festivos
 HOLIDAYS_API_URL = "https://date.nager.at/api/v3/PublicHolidays"
 
-# Diccionario de países disponibles y sus códigos
+# Diccionario de países y sus códigos
 COUNTRIES = {
     "España": "ES",
     "México": "MX",
@@ -16,7 +16,7 @@ COUNTRIES = {
     "Estados Unidos": "US"
 }
 
-# Diccionario de ciudades por país
+# Ciudades por país
 CITIES = {
     "España": ["Madrid", "Barcelona"],
     "México": ["CDMX", "Guadalajara"],
@@ -41,16 +41,22 @@ st.markdown(
             padding: 20px;
         }
 
-        /* Contenedor de filtros alineado en dos filas */
+        /* Contenedor de filtros con menos espacio */
         .filters-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
-            padding: 10px;
+            padding: 5px;
             background: #f8f9fa;
             border-radius: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ajustar el tamaño de los selectores */
+        .filters-container select {
+            height: 36px;
+            font-size: 14px;
         }
 
         /* Tamaño de fuente de los selectores */
@@ -58,28 +64,29 @@ st.markdown(
             color: black !important;
             font-weight: bold;
             font-size: 14px;
+            margin-bottom: 2px !important;
+        }
+
+        /* Mejor distribución entre filtros y calendario */
+        .calendar-section {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 5px;
         }
 
         /* Calendario mejorado */
-        .calendar-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
         .calendar-table {
             border-collapse: collapse;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 5px;
             font-size: 16px;
-            color: black !important; /* Asegurar que los números sean negros */
+            color: black !important;
         }
 
         .calendar-table th, .calendar-table td {
             border: 1px solid #ccc;
             text-align: center;
-            padding: 10px;
+            padding: 8px;
             color: black !important;
         }
 
@@ -89,11 +96,11 @@ st.markdown(
         }
 
         .calendar-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: black !important;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .holiday {
@@ -105,13 +112,13 @@ st.markdown(
         /* Ajuste del contenedor de días festivos */
         .holidays-container {
             background: #f8f9fa;
-            padding: 10px;
+            padding: 8px;
             border-radius: 8px;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .holidays-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: black !important;
             text-align: center;
@@ -119,9 +126,9 @@ st.markdown(
         }
 
         .holiday-item {
-            font-size: 16px;
+            font-size: 14px;
             color: black !important;
-            padding: 5px 0;
+            padding: 3px 0;
         }
 
         /* Ajustar el tamaño del calendario en móviles */
@@ -142,11 +149,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# **📌 Contenedor para los filtros**
+# **📌 Contenedor para los filtros en 2 columnas**
 st.markdown('<div class="filters-container">', unsafe_allow_html=True)
 
-# Selectores alineados en 2 filas (2 por fila)
 col1, col2 = st.columns(2)
+
 with col1:
     country = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
     selected_year = st.selectbox("📅 Año", list(range(current_year, current_year + 5)), index=0)
@@ -169,7 +176,8 @@ holidays_by_month = [
     h for h in holidays if int(h["date"].split("-")[1]) == (list(calendar.month_name[1:]).index(selected_month) + 1)
 ]
 
-# **📅 Mostrar el calendario**
+# **📅 Mostrar el calendario dentro de un contenedor más compacto**
+st.markdown('<div class="calendar-section">', unsafe_allow_html=True)
 st.markdown(f'<div class="calendar-title">📅 {selected_month} - {selected_year}</div>', unsafe_allow_html=True)
 
 # Obtener la estructura del mes
@@ -177,7 +185,6 @@ month_calendar = calendar.monthcalendar(selected_year, list(calendar.month_name[
 
 # Generar la tabla del calendario con los días festivos
 table = f"""
-<div class="calendar-container">
 <table class="calendar-table">
 <tr>
     <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
@@ -198,9 +205,11 @@ for week in month_calendar:
             table += f"<td>{day}</td>"
     table += "</tr>"
 
-table += "</table></div>"
+table += "</table>"
 
 st.markdown(table, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor del calendario
 
 # **📌 Días festivos del mes seleccionado**
 st.markdown('<div class="holidays-container">', unsafe_allow_html=True)
