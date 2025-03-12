@@ -82,6 +82,14 @@ def main():
         st.markdown(
             f"""
             <style>
+                /* Fondo general de la aplicación */
+                .stApp {{
+                    max-width: 100% !important;
+                    padding: 0 !important;
+                    margin: 0 auto !important;
+                    background-color: white !important; /* Fondo blanco */
+
+                }}       
                 .weather-container {{
                     display: flex;
                     justify-content: center;
