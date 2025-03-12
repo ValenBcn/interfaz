@@ -90,6 +90,8 @@ def main():
                     background-color: white !important;
                     color: black !important;
                 }}       
+                
+                /* Contenedor del clima */
                 .weather-container {{
                     display: flex;
                     justify-content: center;
@@ -105,33 +107,37 @@ def main():
                     text-align: center;
                 }}
 
-                /* Estilo del selectbox */
-                div[data-baseweb="select"] > div {{
-                    background-color: #DCE8FF !important; /* Azul tenue */
-                    color: black !important; /* Texto en negro */
-                    border-radius: 5px; /* Bordes redondeados */
+                /* Texto del título del selectbox en negro */
+                div[data-testid="stWidgetLabel"] label {{
+                    color: black !important;
+                    font-weight: bold;
                 }}
 
-                /* Estilo del desplegable */
-                div[data-baseweb="popover"] {{
-                    background-color: #DCE8FF !important; /* Azul tenue */
+                /* Fondo del selectbox en azul tenue y texto en negro */
+                div[data-testid="stSelectbox"] {{
+                    background-color: #DCE8FF !important;
+                    border-radius: 8px;
+                    padding: 5px;
+                }}
+
+                /* Fondo del menú desplegable del selectbox */
+                div[data-testid="stSelectbox"] div {{
+                    background-color: #DCE8FF !important;
                     color: black !important;
                 }}
 
-                /* Color del texto dentro de las opciones del dropdown */
-                div[data-baseweb="popover"] div[role="option"] {{
-                    color: black !important; /* Letras negras */
+                /* Opciones dentro del selectbox */
+                div[data-testid="stSelectbox"] select {{
+                    background-color: #DCE8FF !important;
+                    color: black !important;
+                    font-size: 14px;
+                    padding: 10px;
                 }}
 
-                /* Ajuste del color de los textos seleccionados */
-                div[data-baseweb="select"] span {{
-                    color: black !important; /* Letras negras */
-                }}
-
-                /* Texto del label del selectbox en negro */
-                div[data-testid="stWidgetLabel"] label {{
-                    color: black !important; /* Texto del label en negro */
-                    font-weight: bold;
+                /* Opciones del menú desplegable */
+                div[data-testid="stSelectbox"] option {{
+                    background-color: #DCE8FF !important;
+                    color: black !important;
                 }}
 
                 @media (max-width: 600px) {{
