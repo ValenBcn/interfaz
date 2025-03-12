@@ -13,7 +13,7 @@ st.markdown("""
     <style>
         /* Fondo general y color de texto */
         body {
-            background-color: #F8F9FA;
+            background-color: white;
             color: #212529;
         }
 
@@ -74,7 +74,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("📧 Bandeja de Entrada")
+#st.title("📧 Bandeja de Entrada")
 
 # Variables de sesión
 if "logged_in" not in st.session_state:
