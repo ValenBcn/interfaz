@@ -1,13 +1,33 @@
 import streamlit as st
+import imaplib
+import email
 
-st.title("📧 Accede a tu Correo Empresarial")
+st.title("📬 Correos Recientes")
 
-email_user = st.text_input("Correo electrónico", placeholder="usuario@tu-dominio.com")
+# Usuario y contraseña
+user = st.text_input("Correo:", placeholder="usuario@tu-dominio.com")
+password = st.text_input("Contraseña:", type="password", placeholder="••••••••")
 
-# URL de Webmail
-webmail_url = "https://webmail.datatobe.com/"
+if st.button("📩 Consultar Correos"):
+    try:
+        # Conectar al servidor IMAP de HostGator
+        mail = imaplib.IMAP4_SSL("mail.datatobe.com")
+        mail.login(user, password)
+        mail.select("inbox")
 
-st.markdown(
-    f'<a href="{webmail_url}" target="_blank"><button style="background-color:#3B81F6; color:white; padding:10px 15px; border:none; border-radius:5px; cursor:pointer;">📩 Abrir Webmail</button></a>',
-    unsafe_allow_html=True
-)
+        # Obtener los 5 correos más recientes
+        result, data = mail.search(None, "ALL")
+        email_ids = data[0].split()[-5:]  # Últimos 5 correos
+
+        for e_id in reversed(email_ids):
+            _, msg_data = mail.fetch(e_id, "(RFC822)")
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+                    msg = email.message_from_bytes(response_part[1])
+                    st.markdown(f"**📧 {msg['From']} - {msg['Subject']}**")
+                    st.write(f"🗓 {msg['Date']}")
+                    st.write("---")
+
+        mail.logout()
+    except Exception as e:
+        st.error(f"❌ Error: {str(e)}")
