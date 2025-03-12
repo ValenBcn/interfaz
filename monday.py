@@ -6,7 +6,7 @@ API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ4NDExMTkyNCwiYWFpIjoxMSwidWlkIjo3MzMx
 BOARD_ID = "1863450371"
 API_URL = "https://api.monday.com/v2"
 
-# Consulta GraphQL para obtener el nombre del board y sus tareas con fechas
+# Consulta GraphQL para obtener el nombre del board, tareas y atributos
 QUERY = """
 {
     boards(ids: %s) {
@@ -57,18 +57,30 @@ if board_name:
 
 if tasks:
     for task in tasks:
-        # Extraer las fechas de la columna de valores
-        start_date = "Indefinida"
-        due_date = "Indefinida"
+        # Inicializar valores con "No definido" por si no existen
+        start_date = "No definido"
+        due_date = "No definido"
+        status = "No definido"
+        priority = "No definido"
+        notes = "No definido"
 
         for column in task["column_values"]:
             if column["id"] == "start_date" and column["text"]:
                 start_date = column["text"]
             if column["id"] == "due_date" and column["text"]:
                 due_date = column["text"]
+            if column["id"] == "status" and column["text"]:
+                status = column["text"]
+            if column["id"] == "priority" and column["text"]:
+                priority = column["text"]
+            if column["id"] == "notes" and column["text"]:
+                notes = column["text"]
 
         st.write(f"📝 **{task['name']}**")
         st.write(f"   📅 **Inicio:** {start_date}  |  ⏳ **Vencimiento:** {due_date}")
+        st.write(f"   🔴 **Estado:** {status}  |  ⭐ **Prioridad:** {priority}")
+        st.write(f"   📝 **Notas:** {notes}")
+        st.markdown("---")  # Línea separadora entre tareas
 
 else:
     st.info("No hay tareas disponibles.")
