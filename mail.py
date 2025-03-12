@@ -3,44 +3,74 @@ import imaplib
 import email
 from email.header import decode_header
 
-st.title("📬 Correos Recientes")
+# Configuración del servidor IMAP de HostGator
+IMAP_SERVER = "mail.tudominio.com"  # Cambia esto por el servidor IMAP de tu dominio
+IMAP_PORT = 993
 
-# Usuario y contraseña
-user = st.text_input("Correo:", placeholder="usuario@tu-dominio.com")
-password = st.text_input("Contraseña:", placeholder="••••••••", type="password")
+# Título de la App
+st.markdown("## 📧 Bandeja de Entrada")
 
-if st.button("📩 Consultar Correos"):
+# Formulario de Login
+st.sidebar.header("🔐 Iniciar Sesión en Webmail")
+email_user = st.sidebar.text_input("Correo Electrónico", placeholder="tuemail@tudominio.com")
+password = st.sidebar.text_input("Contraseña", type="password", placeholder="••••••••")
+login_button = st.sidebar.button("Iniciar Sesión")
+
+if login_button and email_user and password:
     try:
-        # Conectar al servidor IMAP de HostGator
-        mail = imaplib.IMAP4_SSL("mail.datatobe.com")  # Cambia por tu dominio
-        mail.login(user, password)
-        mail.select("inbox")
+        # Conectar a la cuenta de correo
+        mail = imaplib.IMAP4_SSL(IMAP_SERVER, IMAP_PORT)
+        mail.login(email_user, password)
+        mail.select("INBOX")  # Seleccionar la bandeja de entrada
 
-        # Obtener los 5 correos más recientes
+        # Obtener los últimos 10 correos
         result, data = mail.search(None, "ALL")
-        email_ids = data[0].split()[-5:]  # Últimos 5 correos
+        email_ids = data[0].split()[-10:]  # Últimos 10 correos
 
-        for e_id in reversed(email_ids):
-            _, msg_data = mail.fetch(e_id, "(RFC822)")
-            for response_part in msg_data:
-                if isinstance(response_part, tuple):
-                    msg = email.message_from_bytes(response_part[1])
-                    
-                    # Decodificar el remitente y el asunto
-                    from_name, encoding = decode_header(msg["From"])[0]
-                    if isinstance(from_name, bytes):
-                        from_name = from_name.decode(encoding or "utf-8")
+        st.markdown("### 📩 Últimos Correos")
+        
+        # Diccionario para almacenar correos
+        emails = {}
 
-                    subject, encoding = decode_header(msg["Subject"])[0]
-                    if isinstance(subject, bytes):
-                        subject = subject.decode(encoding or "utf-8")
+        for num in email_ids[::-1]:  # Recorrer los IDs en orden descendente (más recientes primero)
+            result, msg_data = mail.fetch(num, "(RFC822)")
+            raw_email = msg_data[0][1]
+            msg = email.message_from_bytes(raw_email)
 
-                    date = msg["Date"]
-                    
-                    st.markdown(f"**📧 {from_name}** - {subject}")
-                    st.write(f"🗓 {date}")
-                    st.write("---")
+            # Decodificar el asunto
+            subject, encoding = decode_header(msg["Subject"])[0]
+            if isinstance(subject, bytes):
+                subject = subject.decode(encoding if encoding else "utf-8")
+
+            # Obtener el remitente
+            from_email = msg.get("From")
+
+            # Obtener la fecha
+            date = msg.get("Date")
+
+            # Almacenar en el diccionario
+            emails[num] = {"subject": subject, "from": from_email, "date": date, "content": msg}
+
+            # Mostrar en Streamlit
+            with st.expander(f"📨 {subject} ({date})"):
+                st.markdown(f"**Remitente:** {from_email}")
+                st.markdown(f"**Fecha:** {date}")
+
+                # Extraer el contenido del correo
+                body = ""
+                if msg.is_multipart():
+                    for part in msg.walk():
+                        content_type = part.get_content_type()
+                        content_disposition = str(part.get("Content-Disposition"))
+                        if content_type == "text/plain" and "attachment" not in content_disposition:
+                            body = part.get_payload(decode=True).decode("utf-8", errors="ignore")
+                            break
+                else:
+                    body = msg.get_payload(decode=True).decode("utf-8", errors="ignore")
+
+                st.text_area("Contenido:", body, height=200)
 
         mail.logout()
+
     except Exception as e:
-        st.error(f"❌ Error: {str(e)}")
+        st.error(f"⚠️ Error al conectar: {str(e)}")
