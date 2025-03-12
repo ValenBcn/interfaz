@@ -1,86 +1,66 @@
 import streamlit as st
 import requests
 
-# Configuración de la API de Monday.com
-API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ4NDExMTkyNCwiYWFpIjoxMSwidWlkIjo3MzMxMDUyOCwiaWFkIjoiMjAyNS0wMy0xMVQxNzo1NToyNS4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6Mjg0ODc4MzgsInJnbiI6ImV1YzEifQ.Pp_UNPi-wRC1Y9yxFEQ_Rs9VC2J78QLjK58x7puQBAM"
-BOARD_ID = "1863450371"
+# Configuración
+API_KEY = "TU_API_KEY"
+BOARD_ID = "1863450371"  # Board HR
 API_URL = "https://api.monday.com/v2"
 
-# Consulta GraphQL para obtener el nombre del board, tareas y atributos
-QUERY = """
+# Consulta GraphQL para extraer tareas y columnas
+query = """
 {
-    boards(ids: %s) {
+  boards(ids: %s) {
+    name
+    items_page {
+      items {
         id
         name
-        items_page {
-            items {
-                id
-                name
-                column_values {
-                    id
-                    text
-                }
-            }
+        column_values {
+          id
+          title
+          text
         }
+      }
     }
+  }
 }
 """ % BOARD_ID
 
-def get_monday_tasks():
-    headers = {
-        "Authorization": API_KEY,
-        "Content-Type": "application/json"
-    }
-    
-    response = requests.post(API_URL, json={"query": QUERY}, headers=headers)
-    data = response.json()
-    
-    if "errors" in data:
-        st.error("Error al obtener los datos de Monday.com")
-        st.json(data)  # Muestra los errores en la interfaz
-        return None, []
-    
-    if not data.get("data") or not data["data"].get("boards"):
-        st.warning("No se encontraron tableros con este ID.")
-        return None, []
-    
-    board = data["data"]["boards"][0]
-    tasks = board["items_page"]["items"]
-    
-    return board["name"], tasks
+# Headers para autenticación en Monday.com
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": API_KEY
+}
 
-# ---- INTERFAZ STREAMLIT ----
-board_name, tasks = get_monday_tasks()
+# Realizar la petición
+response = requests.post(API_URL, json={"query": query}, headers=headers)
+data = response.json()
 
-if board_name:
-    st.title(f"📋 Tareas en {board_name}")
-
-if tasks:
-    for task in tasks:
-        # Inicializar valores con "No definido" por si no existen
-        start_date = "No definido"
-        due_date = "No definido"
-        status = "No definido"
-        priority = "No definido"
-        notes = "No definido"
-
-        for column in task["column_values"]:
-            if column["id"] == "start_date" and column["text"]:
-                start_date = column["text"]
-            if column["id"] == "due_date" and column["text"]:
-                due_date = column["text"]
-            if column["id"] == "status" and column["text"]:
-                status = column["text"]
-            if column["id"] == "priority" and column["text"]:
-                priority = column["text"]
-            if column["id"] == "notes" and column["text"]:
-                notes = column["text"]
-
-        st.write(f"📝 **{task['name']}**")
-        st.write(f"   📅 **Inicio:** {start_date}  |  ⏳ **Vencimiento:** {due_date}")
-        st.write(f"   🔴 **Estado:** {status}  |  ⭐ **Prioridad:** {priority}")
-        st.write(f"   📝 **Notas:** {notes}")
-        st.markdown("---")  # Línea separadora entre tareas
-
+# Verificar si hay errores en la respuesta
+if "errors" in data:
+    st.error("Error al obtener datos de Monday.com")
+    st.json(data)  # Mostrar el error en JSON para depuración
 else:
-    st.info("No hay tareas disponibles.")
+    board_name = data["data"]["boards"][0]["name"]
+    tasks = data["data"]["boards"][0]["items_page"]["items"]
+
+    st.markdown(f"## 📋 Tareas en **{board_name}**")
+
+    for task in tasks:
+        task_name = task["name"]
+        columns = {col["title"]: col["text"] for col in task["column_values"]}
+
+        start_date = columns.get("Inicio", "No definido")
+        due_date = columns.get("Vencimiento", "No definido")
+        status = columns.get("Estado", "No definido")
+        priority = columns.get("Prioridad", "No definido")
+        notes = columns.get("Notas", "No definido")
+
+        # Mostrar en formato atractivo
+        st.markdown(f"""
+        ### 📝 {task_name}
+        - 📅 **Inicio:** {start_date} | ⏳ **Vencimiento:** {due_date}
+        - 🔴 **Estado:** {status} | ⭐ **Prioridad:** {priority}
+        - 📝 **Notas:** {notes}
+        ---
+        """)
