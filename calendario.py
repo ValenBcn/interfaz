@@ -1,114 +1,116 @@
 import streamlit as st
 import requests
-import json
 import datetime
 import calendar
 
-# 🎨 Colores
-PRIMARY_COLOR = "#3B81F6"  # Azul corporativo
-SECONDARY_COLOR = "#ffffff"  # Fondo blanco
-TEXT_COLOR = "#000000"  # Texto en negro
+# API para obtener los días festivos
+HOLIDAYS_API_URL = "https://date.nager.at/api/v3/PublicHolidays"
 
-# 📅 API gratuita para días festivos
-HOLIDAY_API = "https://date.nager.at/api/v3/PublicHolidays"
-
-# 🌍 Lista de países y ciudades predefinidas
+# Diccionario de países disponibles y sus códigos
 COUNTRIES = {
-    "España": {"code": "ES", "cities": ["Madrid", "Barcelona", "Valencia", "Sevilla"]},
-    "México": {"code": "MX", "cities": ["CDMX", "Monterrey", "Guadalajara", "Cancún"]},
-    "Francia": {"code": "FR", "cities": ["París", "Lyon", "Marsella", "Toulouse"]},
-    "Alemania": {"code": "DE", "cities": ["Berlín", "Múnich", "Hamburgo", "Colonia"]}
+    "España": "ES",
+    "México": "MX",
+    "Francia": "FR",
+    "Alemania": "DE",
+    "Reino Unido": "GB",
+    "Estados Unidos": "US"
 }
 
-# 📆 Traducción de nombres de meses
-month_names = {
-    "ES": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    "MX": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    "FR": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-    "DE": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+# Diccionario de ciudades por país
+CITIES = {
+    "España": ["Madrid", "Barcelona"],
+    "México": ["CDMX", "Guadalajara"],
+    "Francia": ["París", "Lyon"],
+    "Alemania": ["Berlín", "Múnich"],
+    "Reino Unido": ["Londres", "Manchester"],
+    "Estados Unidos": ["Nueva York", "Los Ángeles"]
 }
 
-# 📌 Obtener fecha actual
-today = datetime.datetime.now()
-current_year = today.year
-current_month = today.month
+# Obtener el año y mes actual
+current_year = datetime.datetime.now().year
+current_month = datetime.datetime.now().month
 
-# 📌 Función para obtener días festivos
-@st.cache_data
-def get_holidays(year, country_code):
-    try:
-        response = requests.get(f"{HOLIDAY_API}/{year}/{country_code}")
-        if response.status_code == 200:
-            return response.json()
-    except Exception:
-        return []
-    return []
+# Layout de filtros
+col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
 
-# 📌 Mostrar título alineado al estilo
-st.markdown(f"<h2 style='color:{PRIMARY_COLOR}; text-align:center;'>📅 Calendario Laboral</h2>", unsafe_allow_html=True)
+# Selectores
+with col1:
+    country = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
+with col2:
+    city = st.selectbox("🏙️ Ciudad", CITIES[country], index=0)
+with col3:
+    selected_year = st.selectbox("📅 Año", list(range(current_year, current_year + 5)), index=0)
+with col4:
+    selected_month = st.selectbox("📆 Mes", list(calendar.month_name[1:]), index=current_month - 1)
 
-# 📌 Filtros (país, ciudad, año, mes) ahora debajo del título
-with st.container():
-    col1, col2, col3, col4 = st.columns([2, 2, 1, 1])
+# Obtener el código del país seleccionado
+country_code = COUNTRIES[country]
 
-    # Selección de país
-    with col1:
-        country_name = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
-        country_code = COUNTRIES[country_name]["code"]
+# Obtener los días festivos del año seleccionado
+response = requests.get(f"{HOLIDAYS_API_URL}/{selected_year}/{country_code}")
+holidays = response.json() if response.status_code == 200 else []
 
-    # Selección de ciudad
-    with col2:
-        city = st.selectbox("🏙 Ciudad", COUNTRIES[country_name]["cities"], index=0)
+# Filtrar días festivos por mes seleccionado
+holidays_by_month = [
+    h for h in holidays if int(h["date"].split("-")[1]) == (list(calendar.month_name[1:]).index(selected_month) + 1)
+]
 
-    # Selección de año
-    with col3:
-        year = st.selectbox("📅 Año", list(range(current_year, current_year + 3)), index=0)
+# Crear el calendario
+st.markdown(f"### 📅 {selected_month} - {selected_year}")
 
-    # Selección de mes
-    with col4:
-        selected_month = st.selectbox("🗓 Mes", month_names[country_code], index=current_month - 1)
-        month_index = month_names[country_code].index(selected_month) + 1  # Convertir nombre del mes a índice (1-12)
+# Obtener la estructura del mes
+month_calendar = calendar.monthcalendar(selected_year, list(calendar.month_name[1:]).index(selected_month) + 1)
 
-# 📌 Obtener días festivos para el país y año seleccionados
-holidays = get_holidays(year, country_code)
-holiday_dates = {datetime.datetime.strptime(h["date"], "%Y-%m-%d").day: h["localName"] for h in holidays if int(h["date"].split("-")[1]) == int(month_index) + 1}
+# Mostrar calendario en formato tabla
+table = f"""
+<style>
+    .calendar-table {{
+        border-collapse: collapse;
+        width: 100%;
+    }}
+    .calendar-table th, .calendar-table td {{
+        border: 1px solid #ccc;
+        text-align: center;
+        padding: 8px;
+        font-size: 16px;
+    }}
+    .calendar-table th {{
+        background-color: #3B81F6;
+        color: white;
+    }}
+    .holiday {{
+        background-color: #FFC107 !important;
+        font-weight: bold;
+    }}
+</style>
+<table class="calendar-table">
+<tr>
+    <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
+</tr>
+"""
 
-# 📅 Mostrar mes seleccionado dinámicamente
-st.markdown(f"### {month_index + 1} - {year}")
+# Mapeo de días festivos
+holiday_dates = {int(h["date"].split("-")[2]): h["localName"] for h in holidays_by_month}
 
-# 📆 Generar el calendario con los cambios correctos
-cal = calendar.TextCalendar()
-month_days = cal.monthdayscalendar(year, month_index + 1)
-
-# 📌 Renderizar el calendario con Streamlit
-table = f"<table style='width:100%; text-align:center; border-collapse: collapse; background: {SECONDARY_COLOR};'>"
-table += f"<tr style='background-color: {PRIMARY_COLOR}; color: white;'>"
-
-for day in ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]:
-    table += f"<th style='padding: 8px; border: 1px solid white;'>{day}</th>"
-table += "</tr>"
-
-for week in month_days:
+for week in month_calendar:
     table += "<tr>"
     for day in week:
         if day == 0:
-            table += "<td style='border: 1px solid #ccc; height:40px;'></td>"
+            table += "<td></td>"
         elif day in holiday_dates:
-            table += f"<td style='background-color: #FFD700; font-weight: bold; border: 1px solid black; color: {TEXT_COLOR};'>{day}</td>"
+            table += f'<td class="holiday">{day}</td>'
         else:
-            table += f"<td style='border: 1px solid #ccc; color: {TEXT_COLOR};'>{day}</td>"
+            table += f"<td>{day}</td>"
     table += "</tr>"
 
 table += "</table>"
+
 st.markdown(table, unsafe_allow_html=True)
 
-# 📜 Mostrar lista de días festivos formateados correctamente (solo del mes seleccionado)
-filtered_holidays = [h for h in holidays if int(h["date"].split("-")[1]) == month_index + 1]
-
-if filtered_holidays:
-    st.markdown(f"### 📌 Días festivos en {city}")
-    for h in filtered_holidays:
-        date_formatted = datetime.datetime.strptime(h['date'], "%Y-%m-%d").strftime("%d/%m/%Y")
-        st.markdown(f"📅 **{date_formatted}** - {h['localName']}")
+# Mostrar días festivos del mes seleccionado
+st.markdown(f"### 📌 Días festivos en {city}")
+if holidays_by_month:
+    for h in holidays_by_month:
+        st.markdown(f"📅 **{h['date']}** - {h['localName']}")
 else:
-    st.warning("No se encontraron días festivos para este país y mes.")
+    st.write("No hay días festivos en este mes.")
