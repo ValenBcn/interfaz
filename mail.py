@@ -10,7 +10,6 @@ IMAP_PORT = 993  # Puerto seguro SSL
 
 # Aplicar estilo CSS para colores y responsividad
 st.markdown("""
-st.markdown("""
     <style>
         /* Contenedor general */
         .main-container {
