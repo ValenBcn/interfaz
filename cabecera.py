@@ -25,12 +25,30 @@ def get_weather(lat, lon):
     except:
         return "No disponible", "No disponible"
 
+def get_season(month, lang):
+    seasons = {
+        "es": ["Invierno ❄️", "Primavera 🌱", "Verano ☀️", "Otoño 🍂"],
+        "en": ["Winter ❄️", "Spring 🌱", "Summer ☀️", "Autumn 🍂"],
+        "de": ["Winter ❄️", "Frühling 🌱", "Sommer ☀️", "Herbst 🍂"],
+        "ca": ["Hivern ❄️", "Primavera 🌱", "Estiu ☀️", "Tardor 🍂"],
+        "fr": ["Hiver ❄️", "Printemps 🌱", "Été ☀️", "Automne 🍂"]
+    }
+    if month in [12, 1, 2]:
+        return seasons[lang][0]
+    elif month in [3, 4, 5]:
+        return seasons[lang][1]
+    elif month in [6, 7, 8]:
+        return seasons[lang][2]
+    else:
+        return seasons[lang][3]
+
 def get_weather_description(code, lang):
     descriptions = {
-        "es": {"No disponible": "No disponible", "0": "Despejado", "1": "Parcialmente nublado", "2": "Nublado", "3": "Lluvia"},
-        "en": {"No disponible": "Not available", "0": "Clear", "1": "Partly cloudy", "2": "Cloudy", "3": "Rain"},
-        "de": {"No disponible": "Nicht verfügbar", "0": "Klar", "1": "Teilweise bewölkt", "2": "Bewölkt", "3": "Regen"},
-        "ca": {"No disponible": "No disponible", "0": "Clar", "1": "Parcialment ennuvolat", "2": "Ennuvolat", "3": "Pluja"}
+        "es": {"No disponible": "No disponible", "0": "☀️ Despejado", "1": "⛅ Parcialmente nublado", "2": "☁️ Nublado", "3": "🌧️ Lluvia"},
+        "en": {"No disponible": "Not available", "0": "☀️ Clear", "1": "⛅ Partly cloudy", "2": "☁️ Cloudy", "3": "🌧️ Rain"},
+        "de": {"No disponible": "Nicht verfügbar", "0": "☀️ Klar", "1": "⛅ Teilweise bewölkt", "2": "☁️ Bewölkt", "3": "🌧️ Regen"},
+        "ca": {"No disponible": "No disponible", "0": "☀️ Clar", "1": "⛅ Parcialment ennuvolat", "2": "☁️ Ennuvolat", "3": "🌧️ Pluja"},
+        "fr": {"No disponible": "Non disponible", "0": "☀️ Clair", "1": "⛅ Partiellement nuageux", "2": "☁️ Nuageux", "3": "🌧️ Pluie"}
     }
     return descriptions.get(lang, descriptions["es"]).get(str(code), "No disponible")
 
@@ -40,47 +58,54 @@ def main():
     temp, forecast_code = get_weather(lat, lon)
     now = datetime.datetime.now()
     formatted_date = now.strftime("%A, %d %B %Y")
+    season = get_season(now.month, "es")
     
-    lang_options = {"Español": "es", "English": "en", "Deutsch": "de", "Català": "ca"}
-    lang_selected = st.selectbox("Selecciona un idioma / Select a language:", list(lang_options.keys()))
+    lang_options = {"🇪🇸 Español": "es", "🇬🇧 English": "en", "🇩🇪 Deutsch": "de", "🇨🇦 Català": "ca", "🇫🇷 Français": "fr"}
+    col1, col2 = st.columns([4, 1])
+    
+    with col2:
+        lang_selected = st.selectbox("🌍 Idioma / Language:", list(lang_options.keys()))
+    
     lang = lang_options[lang_selected]
-    
+    season = get_season(now.month, lang)
     weather_description = get_weather_description(forecast_code, lang)
     
     messages = {
-        "es": f"Hola, hoy es {formatted_date}, el clima actual en {city} es de {temp}°C y esperamos que el día sea {weather_description} en las próximas horas.",
-        "en": f"Hello, today is {formatted_date}, the current weather in {city} is {temp}°C and we expect the day to be {weather_description} in the next few hours.",
-        "de": f"Hallo, heute ist {formatted_date}, das aktuelle Wetter in {city} beträgt {temp}°C und wir erwarten, dass der Tag in den nächsten Stunden {weather_description} sein wird.",
-        "ca": f"Hola, avui és {formatted_date}, el clima actual a {city} és de {temp}°C i esperem que el dia sigui {weather_description} en les pròximes hores."
+        "es": f"👋 Hola, hoy es {formatted_date}, estamos en {season}, el clima actual en 📍 {city} es de 🌡️ {temp}°C y esperamos que el día sea {weather_description} en las próximas horas.",
+        "en": f"👋 Hello, today is {formatted_date}, we are in {season}, the current weather in 📍 {city} is 🌡️ {temp}°C and we expect the day to be {weather_description} in the next few hours.",
+        "de": f"👋 Hallo, heute ist {formatted_date}, wir befinden uns im {season}, das aktuelle Wetter in 📍 {city} beträgt 🌡️ {temp}°C und wir erwarten, dass der Tag in den nächsten Stunden {weather_description} sein wird.",
+        "ca": f"👋 Hola, avui és {formatted_date}, estem a {season}, el clima actual a 📍 {city} és de 🌡️ {temp}°C i esperem que el dia sigui {weather_description} en les pròximes hores.",
+        "fr": f"👋 Bonjour, aujourd'hui c'est {formatted_date}, nous sommes en {season}, le temps actuel à 📍 {city} est de 🌡️ {temp}°C et nous espérons que la journée sera {weather_description} dans les prochaines heures."
     }
     
-    st.markdown(
-        f"""
-        <style>
-            .weather-container {{
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: #3B81F6;
-                color: white;
-                padding: 15px;
-                border-radius: 8px;
-                font-size: 18px;
-                font-family: 'Arial', sans-serif;
-                width: calc(100% - 40px);
-                margin: auto;
-                text-align: center;
-            }}
-            @media (max-width: 600px) {{
+    with col1:
+        st.markdown(
+            f"""
+            <style>
                 .weather-container {{
-                    font-size: 14px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: #3B81F6;
+                    color: white;
+                    padding: 15px;
+                    border-radius: 8px;
+                    font-size: 18px;
+                    font-family: 'Arial', sans-serif;
+                    width: calc(100% - 40px);
+                    margin: auto;
+                    text-align: center;
                 }}
-            }}
-        </style>
-        <div class='weather-container'>{messages[lang]}</div>
-        """,
-        unsafe_allow_html=True
-    )
+                @media (max-width: 600px) {{
+                    .weather-container {{
+                        font-size: 14px;
+                    }}
+                }}
+            </style>
+            <div class='weather-container'>{messages[lang]}</div>
+            """,
+            unsafe_allow_html=True
+        )
 
 if __name__ == "__main__":
     main()
