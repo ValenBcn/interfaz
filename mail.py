@@ -4,19 +4,50 @@ from email.header import decode_header
 import streamlit as st
 
 
-# Aplicar CSS para ajustar el ancho de la interfaz
 st.markdown(
     """
     <style>
+        /* Fondo general de la aplicación */
         .stApp {
             max-width: 100% !important;
             padding: 0 !important;
             margin: 0 auto !important;
+            background-color: white !important; /* Fondo blanco */
         }
+
+        /* Contenedor principal con fondo blanco */
         .block-container {
             max-width: 100% !important;
-            background: #fff;
+            background: white !important;
+            padding: 20px;
         }
+
+        /* Títulos y encabezados con azul */
+        h1, h2, h3, h4, h5, h6 {
+            color: #3B81F6 !important; /* Azul corporativo */
+        }
+
+        /* Bordes y sombras para secciones */
+        .stAlert {
+            border-left: 5px solid #3B81F6 !important;
+            background-color: #f0f4ff !important;
+            padding: 15px;
+        }
+
+        /* Botones con azul corporativo */
+        .stButton>button {
+            background-color: #3B81F6 !important;
+            color: white !important;
+            border-radius: 5px !important;
+            padding: 10px !important;
+        }
+
+        /* Campos de entrada */
+        input, textarea {
+            border: 1px solid #3B81F6 !important;
+            border-radius: 5px;
+        }
+
     </style>
     """,
     unsafe_allow_html=True
