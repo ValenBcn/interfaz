@@ -5,8 +5,9 @@ import datetime
 import calendar
 
 # 🎨 Colores
-PRIMARY_COLOR = "#3B81F6"
+PRIMARY_COLOR = "#3B81F6"  # Azul corporativo
 SECONDARY_COLOR = "#ffffff"  # Fondo blanco
+TEXT_COLOR = "#000000"  # Texto en negro
 
 # 📅 API gratuita para días festivos
 HOLIDAY_API = "https://date.nager.at/api/v3/PublicHolidays"
@@ -43,7 +44,10 @@ def get_holidays(year, country_code):
         return []
     return []
 
-# 📌 Fila de filtros (país, ciudad, año, mes)
+# 📌 Mostrar título alineado al estilo
+st.markdown(f"<h2 style='color:{PRIMARY_COLOR}; text-align:center;'>📅 Calendario Laboral</h2>", unsafe_allow_html=True)
+
+# 📌 Filtros (país, ciudad, año, mes) ahora debajo del título
 with st.container():
     col1, col2, col3, col4 = st.columns([2, 2, 1, 1])
 
@@ -62,21 +66,18 @@ with st.container():
 
     # Selección de mes
     with col4:
-        month = st.selectbox("🗓 Mes", month_names[country_code], index=current_month - 1)
+        month_index = st.selectbox("🗓 Mes", month_names[country_code], index=current_month - 1)
 
 # 📌 Obtener días festivos para el país y año seleccionados
 holidays = get_holidays(year, country_code)
-holiday_dates = {datetime.datetime.strptime(h["date"], "%Y-%m-%d").day: h["localName"] for h in holidays if int(h["date"].split("-")[1]) == current_month}
+holiday_dates = {datetime.datetime.strptime(h["date"], "%Y-%m-%d").day: h["localName"] for h in holidays if int(h["date"].split("-")[1]) == month_index + 1}
 
-# 📆 Mostrar título alineado al estilo
-st.markdown(f"<h2 style='color:{PRIMARY_COLOR}; text-align:center;'>📅 Calendario Laboral {year}</h2>", unsafe_allow_html=True)
+# 📅 Mostrar mes seleccionado dinámicamente
+st.markdown(f"### {month_index + 1} - {year}")
 
-# 📅 Mostrar calendario con fondo blanco y resaltando días festivos
-st.markdown('<div class="calendar-container">', unsafe_allow_html=True)
-st.markdown(f"### {month}")
-
+# 📆 Generar el calendario con los cambios correctos
 cal = calendar.TextCalendar()
-month_days = cal.monthdayscalendar(year, current_month)
+month_days = cal.monthdayscalendar(year, month_index + 1)
 
 # 📌 Renderizar el calendario con Streamlit
 table = f"<table style='width:100%; text-align:center; border-collapse: collapse; background: {SECONDARY_COLOR};'>"
@@ -92,17 +93,16 @@ for week in month_days:
         if day == 0:
             table += "<td style='border: 1px solid #ccc; height:40px;'></td>"
         elif day in holiday_dates:
-            table += f"<td style='background-color: #FFD700; font-weight: bold; border: 1px solid black;'>{day}</td>"
+            table += f"<td style='background-color: #FFD700; font-weight: bold; border: 1px solid black; color: {TEXT_COLOR};'>{day}</td>"
         else:
-            table += f"<td style='border: 1px solid #ccc;'>{day}</td>"
+            table += f"<td style='border: 1px solid #ccc; color: {TEXT_COLOR};'>{day}</td>"
     table += "</tr>"
 
 table += "</table>"
 st.markdown(table, unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
 
-# 📜 Mostrar lista de días festivos formateados (solo del mes seleccionado)
-filtered_holidays = [h for h in holidays if int(h["date"].split("-")[1]) == current_month]
+# 📜 Mostrar lista de días festivos formateados correctamente (solo del mes seleccionado)
+filtered_holidays = [h for h in holidays if int(h["date"].split("-")[1]) == month_index + 1]
 
 if filtered_holidays:
     st.markdown(f"### 📌 Días festivos en {city}")
