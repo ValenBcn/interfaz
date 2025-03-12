@@ -8,17 +8,69 @@ import pandas as pd
 IMAP_SERVER = "mail.datatobe.com"  # Cambia esto por tu servidor IMAP
 IMAP_PORT = 993  # Puerto seguro SSL
 
-# Aplicar estilo CSS para hacer la tabla responsiva
+# Aplicar estilo CSS para colores y responsividad
 st.markdown("""
     <style>
+        /* Fondo general y color de texto */
+        body {
+            background-color: #F8F9FA;
+            color: #212529;
+        }
+
+        /* Títulos y subtítulos */
+        h1, h2, h3 {
+            color: #3B81F6;
+            font-weight: bold;
+        }
+
+        /* Contenedor de la tabla */
         .email-table {
             overflow-x: auto;
             white-space: nowrap;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Tabla de correos */
         .email-table table {
             width: 100%;
             min-width: 600px;
+            border-collapse: collapse;
         }
+
+        .email-table th {
+            background-color: #3B81F6;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .email-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Botón de inicio de sesión */
+        .stButton>button {
+            background-color: #3B81F6;
+            color: white;
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+
+        .stButton>button:hover {
+            background-color: #2A66D9;
+        }
+
+        /* Campos de entrada */
+        .stTextInput>div>div>input {
+            border: 2px solid #3B81F6;
+            border-radius: 5px;
+            padding: 8px;
+        }
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -29,8 +81,8 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
 if not st.session_state.logged_in:
-    email_user = st.text_input("Correo Electrónico:", placeholder="usuario@tudominio.com")
-    password = st.text_input("Contraseña:", type="password", placeholder="••••••••")
+    email_user = st.text_input("📩 Correo Electrónico:", placeholder="usuario@tudominio.com")
+    password = st.text_input("🔑 Contraseña:", type="password", placeholder="••••••••")
 
     if st.button("Iniciar Sesión"):
         try:
@@ -45,7 +97,7 @@ if not st.session_state.logged_in:
 
 # Si ya inició sesión, mostrar correos en tabla responsiva
 if st.session_state.logged_in:
-    st.success(f"✅ Conectado como {st.session_state.email_user}")
+    st.success(f"✅ Conectado como [{st.session_state.email_user}](mailto:{st.session_state.email_user})")
 
     try:
         mail = st.session_state.mail
