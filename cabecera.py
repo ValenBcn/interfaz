@@ -32,8 +32,23 @@ def main():
         "🇫🇷 Français": "fr"
     }
     
-    selected_lang = st.radio("", list(lang_options.keys()), horizontal=True, key="lang_selector")
-    lang = lang_options[selected_lang]
+    if "selected_lang" not in st.session_state:
+        st.session_state.selected_lang = "🇪🇸 Español"
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    
+    if col1.button("🇪🇸 Español"):
+        st.session_state.selected_lang = "🇪🇸 Español"
+    if col2.button("🇬🇧 English"):
+        st.session_state.selected_lang = "🇬🇧 English"
+    if col3.button("🇩🇪 Deutsch"):
+        st.session_state.selected_lang = "🇩🇪 Deutsch"
+    if col4.button("🇨🇦 Català"):
+        st.session_state.selected_lang = "🇨🇦 Català"
+    if col5.button("🇫🇷 Français"):
+        st.session_state.selected_lang = "🇫🇷 Français"
+    
+    lang = lang_options[st.session_state.selected_lang]
     
     messages = {
         "es": f"👋 Hola, hoy es {formatted_date}, el clima actual en 📍 {city} es {weather_info}.",
@@ -59,22 +74,7 @@ def main():
                     font-size: 14px;
                     font-family: 'Arial', sans-serif;
                 }}
-                .lang-buttons {{
-                    display: flex;
-                    justify-content: center;
-                    margin-bottom: 10px;
-                    color: black !important;
-                }}
-                .lang-buttons label {{
-                    margin: 0 10px;
-                    font-size: 14px;
-                    cursor: pointer;
-                    color: black !important;
-                }}
             </style>
-            <div class='lang-buttons'>
-                {' '.join([f"<label onclick=\"document.getElementById('lang_selector').value='{flag}';window.location.reload();\">{flag}</label>" for flag in lang_options.keys()])}
-            </div>
             <div class='header-container'>{messages[lang]}</div>
             """,
             unsafe_allow_html=True
