@@ -1,6 +1,13 @@
 [theme]
-primaryColor = "#3B81F6"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F0F2F6"
-textColor = "#000000"
-font = "sans serif"
+base="light"  # Fondo claro
+primaryColor="#3B81F6"  # Azul para botones y encabezados
+backgroundColor="#FFFFFF"  # Fondo blanco
+secondaryBackgroundColor="#F7F8FF"  # Fondo de cajas ligeras
+textColor="#303235"  # Texto negro/gris oscuro
+font="sans serif"  # Fuente similar a la del chatbot (ajustable)
+
+[server]
+runOnSave = true  # Recargar automáticamente al guardar cambios
+
+[client]
+toolbarMode = "minimal"  # Ocultar barra de herramientas de Streamlit para limpiar la interfaz
