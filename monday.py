@@ -7,16 +7,7 @@ API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ4NDExMTkyNCwiYWFpIjoxMSwidWlkIjo3MzMx
 BOARD_ID = "1863450371"  # ID del tablero HR
 API_URL = "https://api.monday.com/v2"
 
-st.markdown(
-    """
-    <style>
-        [data-testid="stToolbar"] {visibility: hidden !important;} /* Oculta la barra superior de Streamlit */
-        .block-container {padding-top: 0px !important;} /* Elimina espacio superior */
-        .stTextInput, .stSelectbox {display: none !important;} /* Oculta campos de texto/selección vacíos */
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+
 
 # Consulta GraphQL corregida para obtener tareas y estados
 query = """
@@ -105,6 +96,17 @@ st.markdown(
             font-size: 12px;
             color: #555;
         }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <style>
+        [data-testid="stToolbar"] {visibility: hidden !important;} /* Oculta la barra superior de Streamlit */
+        .block-container {padding-top: 0px !important;} /* Elimina espacio superior */
+        .stTextInput, .stSelectbox {display: none !important;} /* Oculta campos de texto/selección vacíos */
     </style>
     """,
     unsafe_allow_html=True
