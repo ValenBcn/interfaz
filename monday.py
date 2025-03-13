@@ -99,6 +99,10 @@ st.markdown(
             font-size: 12px;
             color: #555;
         }
+        .stSelectbox label {
+            color: black !important;
+            font-weight: bold;
+        }
     </style>
     """,
     unsafe_allow_html=True
