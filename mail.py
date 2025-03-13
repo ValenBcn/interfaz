@@ -30,7 +30,7 @@ if not st.session_state.logged_in:
             st.session_state.mail = mail
             st.session_state.logged_in = True
             st.session_state.email_user = email_user
-            st.experimental_rerun()
+            st.rerun()  # 🔥 Corrección aquí 🔥
         except imaplib.IMAP4.error as e:
             st.error(f"❌ Error de autenticación: {e}")
 
