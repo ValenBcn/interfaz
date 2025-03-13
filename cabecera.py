@@ -45,45 +45,44 @@ def main():
         st.session_state.selected_lang = lang
         st.rerun()  # Forzar la recarga para reflejar el cambio de inmediato
 
-    # Aplicar estilos CSS
+    # CSS para los botones
     st.markdown(
-        """
+        f"""
         <style>
-            .lang-buttons {
+            .lang-buttons {{
                 display: flex;
                 justify-content: center;
                 gap: 10px;
                 margin-bottom: 10px;
-                background-color: white;
-                color: black !important;
-            }
-            .lang-button {
+            }}
+            .lang-button {{
                 background-color: white;
                 color: black;
                 border: none;
                 padding: 8px 12px;
-                font-size: 10px;
+                font-size: 14px;
                 cursor: pointer;
                 border-radius: 5px;
                 transition: background 0.3s;
-            }
-            .lang-button:hover {
+            }}
+            .lang-button:hover {{
                 background-color: #f0f0f0;
-            }
-            .selected {
+            }}
+            .selected {{
                 background-color: #3B81F6 !important;
                 color: white !important;
-            }
+            }}
         </style>
-        """,
+        <div class="lang-buttons">
+        """ + "".join(
+            f"""<button class="lang-button {'selected' if lang_code == selected_lang else ''}" 
+                 onclick="window.location.href='?lang={lang_code}'">
+                 {flag} 
+                 </button>"""
+            for flag, lang_code in lang_options.items()
+        ) + "</div>",
         unsafe_allow_html=True
     )
-
-    # Generar botones para seleccionar idioma
-    cols = st.columns(len(lang_options))
-    for i, (label, lang_code) in enumerate(lang_options.items()):
-        if cols[i].button(label, key=f"btn_{lang_code}"):
-            set_language(label)
 
     lang = lang_options[selected_lang]
 
