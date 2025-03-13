@@ -63,82 +63,40 @@ status_options = list(set(status_mapping.get(json.loads(task["column_values"][1]
                           for task in tasks if task["column_values"][1]["value"]))
 status_options.insert(0, "Todos")  # Agregar opción "Todos" al inicio
 
-# **Aplicar Estilos Globales**
+# **Aplicar Estilos Minimalistas**
 st.markdown(
     """
     <style>
-        /* Fondo blanco y alineación general */
         .stApp {
             max-width: 100% !important;
             background-color: white !important;
-            padding: 20px;
-        }
-
-        /* Títulos y subtítulos */
-        h1, h2, h3, h4, h5, h6 {
-            color: #3B81F6 !important;
-            font-weight: bold;
-        }
-
-        /* Selectbox - Fondo Azul Tenue y Texto Negro */
-        div[data-testid="stWidgetLabel"] label {
-            color: black !important;
-            font-weight: bold;
-        }
-
-        div[data-testid="stSelectbox"] {
-            background-color: #DCE8FF !important;
-            border-radius: 8px;
-            padding: 5px;
-        }
-
-        div[data-testid="stSelectbox"] div {
-            background-color: #DCE8FF !important;
-            color: black !important;
-        }
-
-        div[data-testid="stSelectbox"] select {
-            background-color: #DCE8FF !important;
-            color: black !important;
-            font-size: 14px;
             padding: 10px;
         }
-
-        div[data-testid="stSelectbox"] option {
-            background-color: #DCE8FF !important;
-            color: black !important;
-        }
-
-        /* Contenedor con scroll para tareas */
         .scroll-container {
             max-height: 400px;
             overflow-y: auto;
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 5px;
             border-radius: 8px;
             background-color: #f8f9fa;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
         }
-
-        /* Tarjeta de tarea */
         .task-card {
             background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #3B81F6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3B81F6;
+            font-size: 12px;
         }
-
-        /* Texto negro en tareas */
-        .task-card * {
+        .task-title {
+            font-weight: bold;
+            font-size: 14px;
             color: black !important;
         }
-
-        /* Links */
-        a {
-            color: #3B81F6 !important;
-            text-decoration: none;
+        .task-info {
+            font-size: 12px;
+            color: #555;
         }
     </style>
     """,
@@ -148,13 +106,9 @@ st.markdown(
 # **Filtro de estado**
 selected_status = st.selectbox("📌 Filtrar por estado:", status_options)
 
-# **Título con link al board**
-#st.markdown(f'<h2>📋 <a href="https://datatobe.monday.com/boards/{BOARD_ID}" target="_blank">Tareas en {board_name}</a></h2>', unsafe_allow_html=True)
-
-# **Contenedor con scroll**
-#st.markdown('<div class="scroll-container">', unsafe_allow_html=True)
-
 # **Mostrar las tareas con el filtro aplicado**
+st.markdown('<div class="scroll-container">', unsafe_allow_html=True)
+
 for task in tasks:
     task_name = task["name"]
     columns = {col["id"]: json.loads(col["value"]) if col["value"] else None for col in task["column_values"]}
@@ -170,13 +124,12 @@ for task in tasks:
     if selected_status != "Todos" and status != selected_status:
         continue
 
-    # **Mostrar tarea en un contenedor estilizado**
+    # **Mostrar tarea en un contenedor estilizado minimalista**
     st.markdown(f"""
     <div class="task-card">
-        <h3>📝 {task_name}</h3>
-        <p>📅 <strong>Inicio:</strong> {start_date} | ⏳ <strong>Vencimiento:</strong> {due_date}</p>
-        <p>🔴 <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</p>
-        <p>📝 <strong>Notas:</strong> {notes if notes else "No definido"}</p>
+        <p class="task-title">📝 {task_name}</p>
+        <p class="task-info">📅 <strong>Inicio:</strong> {start_date} | ⏳ <strong>Vencimiento:</strong> {due_date}</p>
+        <p class="task-info">🔴 <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</p>
     </div>
     """, unsafe_allow_html=True)
 
