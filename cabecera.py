@@ -58,6 +58,7 @@ def main():
                 cursor: pointer;
                 border-radius: 5px;
                 transition: background 0.3s;
+                text-align: center;
             }}
             .lang-button:hover {{
                 background-color: #f0f0f0;
@@ -67,13 +68,7 @@ def main():
                 color: white !important;
             }}
         </style>
-        <div class="lang-buttons">
-        """ + "".join(
-            f"""<a class="lang-button {'selected' if lang_code == selected_lang else ''}">
-                 {flag} 
-                 </a>"""
-            for flag, lang_code in lang_options.items()
-        ) + "</div>",
+        """,
         unsafe_allow_html=True
     )
 
