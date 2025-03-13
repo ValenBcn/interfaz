@@ -101,17 +101,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(
-    """
-    <style>
-        [data-testid="stToolbar"] {visibility: hidden !important;} /* Oculta la barra superior de Streamlit */
-        .block-container {padding-top: 0px !important;} /* Elimina espacio superior */
-        .stTextInput, .stSelectbox {display: none !important;} /* Oculta campos de texto/selección vacíos */
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 # **Mostrar las tareas con el filtro aplicado**
 st.markdown('<div class="scroll-container">', unsafe_allow_html=True)
 
