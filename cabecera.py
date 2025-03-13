@@ -69,7 +69,7 @@ def main():
         </style>
         <div class="lang-buttons">
         """ + "".join(
-            f"""<a href="?lang={lang_code}" class="lang-button {'selected' if lang_code == selected_lang else ''}">
+            f"""<a class="lang-button {'selected' if lang_code == selected_lang else ''}">
                  {flag} 
                  </a>"""
             for flag, lang_code in lang_options.items()
