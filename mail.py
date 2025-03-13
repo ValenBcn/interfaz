@@ -11,6 +11,17 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+st.markdown("""
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+        
+        html, body, .stApp {
+            font-family: 'Open Sans', sans-serif !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 # Título principal
 st.title("📧 Bandeja de Entrada")
 
