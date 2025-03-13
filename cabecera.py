@@ -32,7 +32,7 @@ def main():
         "🇫🇷 Français": "fr"
     }
     
-    selected_lang = st.radio("", list(lang_options.keys()), horizontal=True)
+    selected_lang = st.radio("", list(lang_options.keys()), horizontal=True, key="lang_selector")
     lang = lang_options[selected_lang]
     
     messages = {
@@ -47,8 +47,11 @@ def main():
         st.markdown(
             f"""
             <style>
+                .stApp {{
+                    background-color: white !important;
+                }}
                 .header-container {{
-                    background-color: white;
+                    background-color: #3B81F6;
                     color: #f7f8ff;
                     text-align: center;
                     padding: 8px 15px;
@@ -62,12 +65,14 @@ def main():
                     margin-bottom: 10px;
                 }}
                 .lang-buttons label {{
-                    margin: 0 5px;
+                    margin: 0 10px;
                     font-size: 14px;
                     cursor: pointer;
                 }}
             </style>
-            <div class='lang-buttons'>{' '.join([f"<label>{flag} {name}</label>" for flag, name in lang_options.items()])}</div>
+            <div class='lang-buttons'>
+                {' '.join([f"<label onclick=\"document.getElementById('lang_selector').value='{flag}';window.location.reload();\">{flag}</label>" for flag in lang_options.keys()])}
+            </div>
             <div class='header-container'>{messages[lang]}</div>
             """,
             unsafe_allow_html=True
