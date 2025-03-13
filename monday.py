@@ -61,6 +61,18 @@ priority_mapping = {
     110: "Alta"
 }
 
+st.markdown("""
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+        
+        html, body, .stApp {
+            font-family: 'Open Sans', sans-serif !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+
+
 # **Aplicar Estilos Minimalistas**
 st.markdown(
     """
