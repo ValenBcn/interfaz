@@ -79,7 +79,7 @@ st.markdown(
     <style>
         .stApp {
             max-width: 100% !important;
-            background-color: white !important;
+            background-color: #f7f8ff !important;
             padding: 10px;
         }
         .scroll-container {
