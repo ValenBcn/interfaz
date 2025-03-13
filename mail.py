@@ -23,7 +23,7 @@ st.markdown("""
 
 
 # Título principal
-st.title("📧 Bandeja de Entrada")
+#st.title("📧 Bandeja de Entrada")
 
 # Variables de sesión
 if "logged_in" not in st.session_state:
