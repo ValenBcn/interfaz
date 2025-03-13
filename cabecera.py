@@ -69,7 +69,8 @@ def main():
                 background-color: #f0f0f0;
             }
             .selected {
-                background-color: #d3d3d3 !important;
+                background-color: #3B81F6 !important;
+                color: white !important;
             }
         </style>
         """,
