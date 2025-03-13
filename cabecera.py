@@ -68,7 +68,7 @@ def main():
                     margin: 0 10px;
                     font-size: 14px;
                     cursor: pointer;
-                    font-color: black;
+                    color: black !important;
                 }}
             </style>
             <div class='lang-buttons'>
