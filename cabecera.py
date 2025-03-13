@@ -35,20 +35,45 @@ def main():
     if "selected_lang" not in st.session_state:
         st.session_state.selected_lang = "🇪🇸 Español"
     
-    col1, col2, col3, col4, col5 = st.columns(5)
+    selected_lang = st.session_state.selected_lang
     
-    if col1.button("🇪🇸 Español"):
-        st.session_state.selected_lang = "🇪🇸 Español"
-    if col2.button("🇬🇧 English"):
-        st.session_state.selected_lang = "🇬🇧 English"
-    if col3.button("🇩🇪 Deutsch"):
-        st.session_state.selected_lang = "🇩🇪 Deutsch"
-    if col4.button("🇨🇦 Català"):
-        st.session_state.selected_lang = "🇨🇦 Català"
-    if col5.button("🇫🇷 Français"):
-        st.session_state.selected_lang = "🇫🇷 Français"
+    st.markdown(
+        """
+        <style>
+            .lang-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            .lang-button {
+                background-color: white;
+                color: black;
+                border: none;
+                padding: 8px 12px;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 5px;
+                transition: background 0.3s;
+            }
+            .lang-button:hover {
+                background-color: #f0f0f0;
+            }
+            .selected {
+                background-color: #d3d3d3 !important;
+            }
+        </style>
+        <div class='lang-buttons'>
+        """ + " ".join([
+            f"<button class='lang-button {'selected' if lang == selected_lang else ''}' onclick=\"window.location.search='?lang={lang}'\">{lang}</button>"
+            for lang in lang_options.keys()
+        ]) + """
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     
-    lang = lang_options[st.session_state.selected_lang]
+    lang = lang_options[selected_lang]
     
     messages = {
         "es": f"👋 Hola, hoy es {formatted_date}, el clima actual en 📍 {city} es {weather_info}.",
