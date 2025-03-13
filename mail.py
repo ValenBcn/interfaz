@@ -3,106 +3,61 @@ import email
 from email.header import decode_header
 import streamlit as st
 
-# Estilo CSS mejorado
+# Estilo CSS minimalista
 st.markdown(
     """
- <style>
-    /* Fondo general de la aplicación */
-    .stApp {
-        max-width: 100% !important;
-        padding: 0 !important;
-        margin: 0 auto !important;
-        background-color: white !important; /* Fondo blanco */
-        color: black !important; /* Texto en negro */
-    }
-
-    /* Cambiar color de los labels de los inputs */
-    .stTextInput label {
-        color: black !important; /* Texto en negro */
-        background-color: white !important; /* Fondo blanco */
-    }
-
-    /* Contenedor principal */
-    .block-container {
-        max-width: 100% !important;
-        background: white !important;
-        padding: 20px;
-        color: black !important; /* Texto en negro */
-    }
-
-    /* Títulos en azul */
-    h1, h2, h3, h4, h5, h6 {
-        color: #3B81F6 !important; /* Azul corporativo */
-    }
-
-    /* Botones con azul corporativo */
-    .stButton>button {
-        background-color: #3B81F6 !important;
-        color: white !important;
-        border-radius: 5px !important;
-        padding: 10px !important;
-    }
-
-    /* Campos de entrada */
-    input, textarea {
-        border: 1px solid #3B81F6 !important;
-        border-radius: 5px;
-        color: black !important; /* Texto en negro */
-    }
-
-    /* Lista de correos */
-    .email-list {
-        border-right: 2px solid #ddd;
-        overflow-y: auto;
-        max-height: 500px;
-        padding: 10px;
-        color: black !important; /* Texto en negro */
-    }
-
-    .email-item {
-        padding: 12px;
-        border-bottom: 1px solid #ddd;
-        cursor: pointer;
-        transition: background 0.2s;
-        background: #f9f9f9;
-        border-radius: 5px;
-        color: black !important; /* Texto en negro */
-    }
-
-    .email-item:hover {
-        background: #d0e1ff !important;
-    }
-
-    /* Contenedor del correo seleccionado */
-    .email-body {
-        padding: 15px;
-        background: white;
-        border-left: 3px solid #3B81F6;
-        max-height: 500px;
-        overflow-y: auto;
-        color: black !important; /* Texto en negro */
-    }
-
-    /* Mensaje de selección de correo */
-    .stAlert {
-        background-color: #dcebfe !important; /* Azul claro */
-        color: black !important; /* Texto en negro */
-    }
-</style>
+    <style>
+        .stApp {
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+            background-color: white !important;
+            color: black !important;
+        }
+        .email-container {
+            padding: 10px;
+            border-radius: 8px;
+            background: #f9f9f9;
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3B81F6 !important;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3B81F6;
+        }
+        .email-item {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background 0.2s;
+            background: white;
+            border-radius: 5px;
+        }
+        .email-item:hover {
+            background: #d0e1ff !important;
+        }
+        .email-body {
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #3B81F6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
     """,
     unsafe_allow_html=True
 )
 
 # Configuración del servidor IMAP
-IMAP_SERVER = "mail.datatobe.com"  # Servidor IMAP
-IMAP_PORT = 993  # Puerto SSL seguro
-
-#st.title("📧 Bandeja de Entrada")
+IMAP_SERVER = "mail.datatobe.com"
+IMAP_PORT = 993
 
 # Variables de sesión
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-    st.session_state.selected_email = None  # Variable para almacenar el correo seleccionado
+    st.session_state.selected_email = None
 
 if not st.session_state.logged_in:
     email_user = st.text_input("📩 Correo Electrónico:", placeholder="usuario@tudominio.com")
@@ -127,7 +82,6 @@ if st.session_state.logged_in:
         mail = st.session_state.mail
         mail.select("INBOX")
 
-        # Buscar los últimos 10 correos
         status, messages = mail.search(None, "ALL")
         mail_ids = messages[0].split()
 
@@ -138,14 +92,11 @@ if st.session_state.logged_in:
                 for response_part in msg_data:
                     if isinstance(response_part, tuple):
                         msg = email.message_from_bytes(response_part[1])
-
                         sender = msg["From"]
                         subject, encoding = decode_header(msg["Subject"])[0]
                         if isinstance(subject, bytes):
                             subject = subject.decode(encoding or "utf-8")
                         date = msg["Date"]
-
-                        # Extraer cuerpo del email
                         body = ""
                         if msg.is_multipart():
                             for part in msg.walk():
@@ -154,34 +105,28 @@ if st.session_state.logged_in:
                                     break
                         else:
                             body = msg.get_payload(decode=True).decode(errors="ignore")
-
                         emails.append({"Fecha": date, "Asunto": subject, "Remitente": sender, "Cuerpo": body, "ID": mail_id})
 
-            # 📌 **Diseño en columnas** 
             col1, col2 = st.columns([2, 3])
 
-            # **Columna Izquierda - Lista de correos**
             with col1:
-                st.subheader("📥 Correos Recibidos")
+                st.markdown("<div class='email-header'>📥 Correos Recibidos</div>", unsafe_allow_html=True)
                 for email_data in emails:
                     button_key = f"email_{email_data['ID']}"
                     if st.button(f"✉️ {email_data['Asunto']} - {email_data['Remitente']}", key=button_key):
                         st.session_state.selected_email = email_data
 
-            # **Columna Derecha - Cuerpo del correo seleccionado**
             with col2:
                 if st.session_state.selected_email:
                     email_selected = st.session_state.selected_email
-                    st.subheader(f"📜 {email_selected['Asunto']}")
-                    st.write(f"**De:** {email_selected['Remitente']}")
-                    st.write(f"**Fecha:** {email_selected['Fecha']}")
-                    st.write("---")
-                    st.write(email_selected["Cuerpo"])
+                    st.markdown("<div class='email-header'>📜 " + email_selected['Asunto'] + "</div>", unsafe_allow_html=True)
+                    st.markdown(f"**De:** {email_selected['Remitente']}")
+                    st.markdown(f"**Fecha:** {email_selected['Fecha']}")
+                    st.markdown("---")
+                    st.markdown(email_selected["Cuerpo"])
                 else:
                     st.info("Selecciona un correo para leerlo.")
-
         else:
             st.info("📭 No tienes correos nuevos.")
-
     except Exception as e:
         st.error(f"⚠️ Error al recuperar los correos: {str(e)}")
