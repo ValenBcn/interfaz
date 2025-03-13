@@ -40,35 +40,43 @@ def main():
     def set_language(lang):
         st.session_state.selected_lang = lang
     
-    st.markdown(
-        """
-        <style>
-            .lang-buttons {
-                display: flex;
-                justify-content: center;
-                gap: 10px;
-                margin-bottom: 10px;
-            }
-            .lang-button {
-                background-color: white;  /* Cambia a 'transparent' si lo prefieres */
-                color: black;
-                border: none;
-                padding: 8px 12px;
-                font-size: 14px;
-                cursor: pointer;
-                border-radius: 5px;
-                transition: background 0.3s;
-            }
-            .lang-button:hover {
-                background-color: #f0f0f0; /* Efecto hover */
-            }
-            .selected {
-                background-color: #d3d3d3 !important; /* Color de selección */
-            }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+st.markdown(
+    """
+    <style>
+        .lang-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .lang-button {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .lang-button:hover {
+            background-color: #f0f0f0;
+        }
+        .selected {
+            background-color: #d3d3d3 !important;
+        }
+    </style>
+
+    <div class="lang-buttons">
+        <button class="lang-button" onclick="window.location.href='?lang=es'">🇪🇸 Español</button>
+        <button class="lang-button" onclick="window.location.href='?lang=en'">🇬🇧 English</button>
+        <button class="lang-button" onclick="window.location.href='?lang=de'">🇩🇪 Deutsch</button>
+        <button class="lang-button" onclick="window.location.href='?lang=ca'">🇨🇦 Català</button>
+        <button class="lang-button" onclick="window.location.href='?lang=fr'">🇫🇷 Français</button>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
     
     cols = st.columns(len(lang_options))
     for i, (label, lang) in enumerate(lang_options.items()):
