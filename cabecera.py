@@ -28,63 +28,61 @@ def main():
         "🇪🇸 Español": "es", 
         "🇬🇧 English": "en", 
         "🇩🇪 Deutsch": "de", 
-        "🇪🇸 Català": "ca", 
+        "🇨🇦 Català": "ca", 
         "🇫🇷 Français": "fr"
     }
     
     if "selected_lang" not in st.session_state:
         st.session_state.selected_lang = "🇪🇸 Español"
-    
+
     selected_lang = st.session_state.selected_lang
-    
+
+    # Asegurar que el idioma seleccionado sea válido
+    if selected_lang not in lang_options:
+        selected_lang = "🇪🇸 Español"
+
+    lang = lang_options[selected_lang]
+
     def set_language(lang):
         st.session_state.selected_lang = lang
-    
-st.markdown(
-    """
-    <style>
-        .lang-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .lang-button {
-            background-color: white;
-            color: black;
-            border: none;
-            padding: 8px 12px;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .lang-button:hover {
-            background-color: #f0f0f0;
-        }
-        .selected {
-            background-color: #d3d3d3 !important;
-        }
-    </style>
 
-    <div class="lang-buttons">
-        <button class="lang-button" onclick="window.location.href='?lang=es'">🇪🇸 Español</button>
-        <button class="lang-button" onclick="window.location.href='?lang=en'">🇬🇧 English</button>
-        <button class="lang-button" onclick="window.location.href='?lang=de'">🇩🇪 Deutsch</button>
-        <button class="lang-button" onclick="window.location.href='?lang=ca'">🇨🇦 Català</button>
-        <button class="lang-button" onclick="window.location.href='?lang=fr'">🇫🇷 Français</button>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-    
+    # Aplicar estilos CSS
+    st.markdown(
+        """
+        <style>
+            .lang-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            .lang-button {
+                background-color: white;
+                color: black;
+                border: none;
+                padding: 8px 12px;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 5px;
+                transition: background 0.3s;
+            }
+            .lang-button:hover {
+                background-color: #f0f0f0;
+            }
+            .selected {
+                background-color: #d3d3d3 !important;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Generar botones para seleccionar idioma
     cols = st.columns(len(lang_options))
-    for i, (label, lang) in enumerate(lang_options.items()):
-        if cols[i].button(label, key=lang):
+    for i, (label, lang_code) in enumerate(lang_options.items()):
+        if cols[i].button(label, key=lang_code):
             set_language(label)
-    
-    lang = lang_options[selected_lang]
-    
+
     messages = {
         "es": f"👋 Hola, hoy es {formatted_date}, el clima actual en 📍 {city} es {weather_info}.",
         "en": f"👋 Hello, today is {formatted_date}, the current weather in 📍 {city} is {weather_info}.",
@@ -92,7 +90,7 @@ st.markdown(
         "ca": f"👋 Hola, avui és {formatted_date}, el clima actual a 📍 {city} és {weather_info}.",
         "fr": f"👋 Bonjour, aujourd'hui c'est {formatted_date}, le temps actuel à 📍 {city} est {weather_info}."
     }
-    
+
     with st.container():
         st.markdown(
             f"""
