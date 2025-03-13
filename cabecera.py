@@ -41,10 +41,9 @@ def main():
     if selected_lang not in lang_options:
         selected_lang = "🇪🇸 Español"
 
-    lang = lang_options[selected_lang]
-
     def set_language(lang):
         st.session_state.selected_lang = lang
+        st.rerun()  # Forzar la recarga para reflejar el cambio de inmediato
 
     # Aplicar estilos CSS
     st.markdown(
@@ -55,15 +54,11 @@ def main():
                 justify-content: center;
                 gap: 10px;
                 margin-bottom: 10px;
-                background-color: white;  !important;
-                color: black;  !important;
-                border: none;  !important;
-                
             }
             .lang-button {
-                background-color: white;  !important;
-                color: black;  !important;
-                border: none;  !important;
+                background-color: white;
+                color: black;
+                border: none;
                 padding: 8px 12px;
                 font-size: 14px;
                 cursor: pointer;
@@ -84,8 +79,10 @@ def main():
     # Generar botones para seleccionar idioma
     cols = st.columns(len(lang_options))
     for i, (label, lang_code) in enumerate(lang_options.items()):
-        if cols[i].button(label, key=lang_code):
+        if cols[i].button(label, key=f"btn_{lang_code}"):
             set_language(label)
+
+    lang = lang_options[selected_lang]
 
     messages = {
         "es": f"👋 Hola, hoy es {formatted_date}, el clima actual en 📍 {city} es {weather_info}.",
