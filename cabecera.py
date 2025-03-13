@@ -37,7 +37,7 @@ def main():
     if "selected_lang" not in st.session_state:
         st.session_state.selected_lang = "es"  # Español por defecto
 
-    selected_lang = st.session_state.selected_lang
+    #selected_lang = st.session_state.selected_lang
 
     # CSS para los botones
     st.markdown(
