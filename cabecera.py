@@ -24,7 +24,7 @@ def main():
     now = datetime.datetime.now()
     formatted_date = now.strftime("%d %b %Y")
 
-    # Definición de idiomas
+    # Definir idiomas
     lang_options = {
         "🇪🇸 Español": "es",
         "🇬🇧 English": "en",
@@ -33,15 +33,11 @@ def main():
         "🇫🇷 Français": "fr"
     }
 
-    # Obtener el idioma de los parámetros de la URL
-    query_params = st.query_params
-    if "lang" in query_params:
-        selected_lang = query_params["lang"]
-    else:
-        selected_lang = "es"  # Español por defecto
+    # Inicializar idioma en session_state
+    if "selected_lang" not in st.session_state:
+        st.session_state.selected_lang = "es"  # Español por defecto
 
-    # Guardar el idioma en la sesión de Streamlit
-    st.session_state.selected_lang = selected_lang
+    selected_lang = st.session_state.selected_lang
 
     # CSS para los botones
     st.markdown(
@@ -62,6 +58,7 @@ def main():
                 cursor: pointer;
                 border-radius: 5px;
                 transition: background 0.3s;
+                text-align: center;
             }}
             .lang-button:hover {{
                 background-color: #f0f0f0;
@@ -71,15 +68,19 @@ def main():
                 color: white !important;
             }}
         </style>
-        <div class="lang-buttons">
-        """ + "".join(
-            f"""<a href="?lang={lang_code}" class="lang-button {'selected' if lang_code == selected_lang else ''}">
-                 {flag} 
-                 </a>"""
-            for flag, lang_code in lang_options.items()
-        ) + "</div>",
+        """,
         unsafe_allow_html=True
     )
+
+    # Generar botones para seleccionar idioma
+    cols = st.columns(len(lang_options))
+    for i, (label, lang_code) in enumerate(lang_options.items()):
+        if cols[i].button(label, key=f"btn_{lang_code}"):
+            st.session_state.selected_lang = lang_code
+            st.rerun()  # Recargar la interfaz sin abrir otra página
+
+    # Obtener el idioma seleccionado
+    lang = st.session_state.selected_lang
 
     # Mensajes en cada idioma
     messages = {
@@ -108,7 +109,7 @@ def main():
                     font-family: 'Arial', sans-serif;
                 }}
             </style>
-            <div class='header-container'>{messages[selected_lang]}</div>
+            <div class='header-container'>{messages[lang]}</div>
             """,
             unsafe_allow_html=True
         )
