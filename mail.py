@@ -3,13 +3,13 @@ import email
 from email.header import decode_header
 import streamlit as st
 
-# Estilo CSS minimalista
+# Estilo CSS minimalista y responsivo
 st.markdown(
     """
     <style>
         .stApp {
             max-width: 100% !important;
-            padding: 0 !important;
+            padding: 10px !important;
             margin: 0 auto !important;
             background-color: white !important;
             color: black !important;
@@ -19,31 +19,36 @@ st.markdown(
             border-radius: 8px;
             background: #f9f9f9;
             box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+            max-height: 80vh;
+            overflow-y: auto;
         }
         .email-header {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #3B81F6 !important;
             padding-bottom: 5px;
             border-bottom: 2px solid #3B81F6;
+            margin-bottom: 10px;
         }
         .email-item {
-            padding: 8px;
+            padding: 10px;
             border-bottom: 1px solid #ddd;
             cursor: pointer;
             transition: background 0.2s;
             background: white;
             border-radius: 5px;
+            font-size: 14px;
         }
         .email-item:hover {
             background: #d0e1ff !important;
         }
         .email-body {
-            padding: 10px;
+            padding: 15px;
             background: white;
             border-left: 3px solid #3B81F6;
-            max-height: 400px;
+            max-height: 60vh;
             overflow-y: auto;
+            font-size: 14px;
         }
     </style>
     """,
@@ -81,7 +86,6 @@ if st.session_state.logged_in:
     try:
         mail = st.session_state.mail
         mail.select("INBOX")
-
         status, messages = mail.search(None, "ALL")
         mail_ids = messages[0].split()
 
@@ -112,14 +116,16 @@ if st.session_state.logged_in:
             with col1:
                 st.markdown("<div class='email-header'>📥 Correos Recibidos</div>", unsafe_allow_html=True)
                 for email_data in emails:
-                    button_key = f"email_{email_data['ID']}"
-                    if st.button(f"✉️ {email_data['Asunto']} - {email_data['Remitente']}", key=button_key):
-                        st.session_state.selected_email = email_data
+                    if st.session_state.selected_email and st.session_state.selected_email["ID"] == email_data["ID"]:
+                        st.markdown(f"<div class='email-item' style='background:#d0e1ff;'><strong>✉️ {email_data['Asunto']}</strong><br><small>{email_data['Remitente']}</small></div>", unsafe_allow_html=True)
+                    else:
+                        if st.button(f"✉️ {email_data['Asunto']} ({email_data['Remitente']})", key=f"email_{email_data['ID']}"):
+                            st.session_state.selected_email = email_data
 
             with col2:
                 if st.session_state.selected_email:
                     email_selected = st.session_state.selected_email
-                    st.markdown("<div class='email-header'>📜 " + email_selected['Asunto'] + "</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='email-header'>📜 {email_selected['Asunto']}</div>", unsafe_allow_html=True)
                     st.markdown(f"**De:** {email_selected['Remitente']}")
                     st.markdown(f"**Fecha:** {email_selected['Fecha']}")
                     st.markdown("---")
