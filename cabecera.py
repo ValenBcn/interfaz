@@ -37,6 +37,9 @@ def main():
     
     selected_lang = st.session_state.selected_lang
     
+    def set_language(lang):
+        st.session_state.selected_lang = lang
+    
     st.markdown(
         """
         <style>
@@ -63,15 +66,14 @@ def main():
                 background-color: #d3d3d3 !important;
             }
         </style>
-        <div class='lang-buttons'>
-        """ + " ".join([
-            f"<button class='lang-button {'selected' if lang == selected_lang else ''}' onclick=\"window.location.search='?lang={lang}'\">{lang}</button>"
-            for lang in lang_options.keys()
-        ]) + """
-        </div>
         """,
         unsafe_allow_html=True
     )
+    
+    cols = st.columns(len(lang_options))
+    for i, (label, lang) in enumerate(lang_options.items()):
+        if cols[i].button(label, key=lang):
+            set_language(label)
     
     lang = lang_options[selected_lang]
     
