@@ -23,27 +23,19 @@ def main():
     weather_info = get_weather(city)
     now = datetime.datetime.now()
     formatted_date = now.strftime("%d %b %Y")
-    
+
     lang_options = {
-        "🇪🇸 Español": "es", 
-        "🇬🇧 English": "en", 
-        "🇩🇪 Deutsch": "de", 
-        "🇪🇸 Català": "ca",
+        "🇪🇸 Español": "es",
+        "🇬🇧 English": "en",
+        "🇩🇪 Deutsch": "de",
+        "🇨🇦 Català": "ca",
         "🇫🇷 Français": "fr"
     }
-    
+
     if "selected_lang" not in st.session_state:
-        st.session_state.selected_lang = "🇪🇸 Español"
+        st.session_state.selected_lang = "es"
 
     selected_lang = st.session_state.selected_lang
-
-    # Asegurar que el idioma seleccionado sea válido
-    if selected_lang not in lang_options:
-        selected_lang = "🇪🇸 Español"
-
-    def set_language(lang):
-        st.session_state.selected_lang = lang
-        st.rerun()  # Forzar la recarga para reflejar el cambio de inmediato
 
     # CSS para los botones
     st.markdown(
@@ -83,13 +75,7 @@ def main():
         unsafe_allow_html=True
     )
 
-    # Generar botones para seleccionar idioma
-    cols = st.columns(len(lang_options))
-    for i, (label, lang_code) in enumerate(lang_options.items()):
-        if cols[i].button(label, key=f"btn_{lang_code}"):
-            set_language(label)
-
-    lang = lang_options[selected_lang]
+    lang = selected_lang
 
     messages = {
         "es": f"👋 Hola, hoy es {formatted_date}, el clima actual en 📍 {city} es {weather_info}.",
