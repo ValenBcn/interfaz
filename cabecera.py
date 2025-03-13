@@ -37,7 +37,7 @@ def main():
     if "selected_lang" not in st.session_state:
         st.session_state.selected_lang = "es"  # Español por defecto
 
-    #selected_lang = st.session_state.selected_lang
+    selected_lang = st.session_state.selected_lang
 
     # CSS para los botones
     st.markdown(
@@ -73,11 +73,11 @@ def main():
     )
 
     # Generar botones para seleccionar idioma
-    cols = st.columns(len(lang_options))
-    for i, (label, lang_code) in enumerate(lang_options.items()):
-        if cols[i].button(label, key=f"btn_{lang_code}"):
-            st.session_state.selected_lang = lang_code
-            st.rerun()  # Recargar la interfaz sin abrir otra página
+    #cols = st.columns(len(lang_options))
+    #for i, (label, lang_code) in enumerate(lang_options.items()):
+    #    if cols[i].button(label, key=f"btn_{lang_code}"):
+    #        st.session_state.selected_lang = lang_code
+    #        st.rerun()  # Recargar la interfaz sin abrir otra página
 
     # Obtener el idioma seleccionado
     lang = st.session_state.selected_lang
