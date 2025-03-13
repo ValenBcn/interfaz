@@ -63,6 +63,7 @@ def main():
                     display: flex;
                     justify-content: center;
                     margin-bottom: 10px;
+                    color: black !important;
                 }}
                 .lang-buttons label {{
                     margin: 0 10px;
