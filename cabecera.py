@@ -60,7 +60,7 @@ def main():
                 color: black;
                 border: none;
                 padding: 8px 12px;
-                font-size: 14px;
+                font-size: 10px;
                 cursor: pointer;
                 border-radius: 5px;
                 transition: background 0.3s;
