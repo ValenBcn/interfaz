@@ -48,20 +48,16 @@ tasks = data["data"]["boards"][0]["items_page"]["items"]
 
 # Mapeo de estados y prioridades
 status_mapping = {
-    0: "No iniciado",
-    1: "Listo",
-    2: "Detenido"
+    0: ("No iniciado", "🔴"),
+    1: ("Listo", "🟢"),
+    2: ("En curso", "🔵"),
+    3: ("Detenido", "🔴")
 }
 priority_mapping = {
     7: "Baja",
     109: "Media",
     110: "Alta"
 }
-
-# Obtener todos los estados disponibles en las tareas
-status_options = list(set(status_mapping.get(json.loads(task["column_values"][1]["value"])["index"], "Desconocido") 
-                          for task in tasks if task["column_values"][1]["value"]))
-status_options.insert(0, "Todos")  # Agregar opción "Todos" al inicio
 
 # **Aplicar Estilos Minimalistas**
 st.markdown(
@@ -71,7 +67,6 @@ st.markdown(
             max-width: 100% !important;
             background-color: white !important;
             padding: 10px;
-            color: black !important;
         }
         .scroll-container {
             max-height: 400px;
@@ -99,17 +94,10 @@ st.markdown(
             font-size: 12px;
             color: #555;
         }
-        .stSelectbox label {
-            color: black !important;
-            font-weight: bold;
-        }
     </style>
     """,
     unsafe_allow_html=True
 )
-
-# **Filtro de estado**
-selected_status = st.selectbox("📌 Filtrar por estado:", status_options)
 
 # **Mostrar las tareas con el filtro aplicado**
 st.markdown('<div class="scroll-container">', unsafe_allow_html=True)
@@ -121,20 +109,16 @@ for task in tasks:
     # Extraer valores
     start_date = columns.get("project_timeline", {}).get("from", "No definido")
     due_date = columns.get("project_timeline", {}).get("to", "No definido")
-    status = status_mapping.get(columns.get("project_status", {}).get("index"), "Desconocido")
+    status, status_icon = status_mapping.get(columns.get("project_status", {}).get("index"), ("Desconocido", "⚪"))
     priority = priority_mapping.get(columns.get("priority_1", {}).get("index"), "Desconocida")
     notes = columns.get("text9", "No definido")
-
-    # **Aplicar filtro de estado**
-    if selected_status != "Todos" and status != selected_status:
-        continue
 
     # **Mostrar tarea en un contenedor estilizado minimalista**
     st.markdown(f"""
     <div class="task-card">
         <p class="task-title">📝 {task_name}</p>
         <p class="task-info">📅 <strong>Inicio:</strong> {start_date} | ⏳ <strong>Vencimiento:</strong> {due_date}</p>
-        <p class="task-info">🔴 <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</p>
+        <p class="task-info">{status_icon} <strong>Estado:</strong> {status} | ⭐ <strong>Prioridad:</strong> {priority}</p>
     </div>
     """, unsafe_allow_html=True)
 
