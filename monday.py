@@ -71,6 +71,7 @@ st.markdown(
             max-width: 100% !important;
             background-color: white !important;
             padding: 10px;
+            color: black !important;
         }
         .scroll-container {
             max-height: 400px;
