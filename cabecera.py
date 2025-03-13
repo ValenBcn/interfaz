@@ -28,7 +28,7 @@ def main():
         "🇪🇸 Español": "es", 
         "🇬🇧 English": "en", 
         "🇩🇪 Deutsch": "de", 
-        "🇨🇦 Català": "ca", 
+        "🇪🇸 Català": "ca", 
         "🇫🇷 Français": "fr"
     }
     
@@ -50,7 +50,7 @@ def main():
                 margin-bottom: 10px;
             }
             .lang-button {
-                background-color: white;
+                background-color: white;  /* Cambia a 'transparent' si lo prefieres */
                 color: black;
                 border: none;
                 padding: 8px 12px;
@@ -60,10 +60,10 @@ def main():
                 transition: background 0.3s;
             }
             .lang-button:hover {
-                background-color: #f0f0f0;
+                background-color: #f0f0f0; /* Efecto hover */
             }
             .selected {
-                background-color: #d3d3d3 !important;
+                background-color: #d3d3d3 !important; /* Color de selección */
             }
         </style>
         """,
