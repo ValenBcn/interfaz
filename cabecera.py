@@ -23,27 +23,25 @@ def main():
     weather_info = get_weather(city)
     now = datetime.datetime.now()
     formatted_date = now.strftime("%d %b %Y")
-    
+
+    # Definición de idiomas
     lang_options = {
-        "🇪🇸 Español": "es", 
-        "🇬🇧 English": "en", 
-        "🇩🇪 Deutsch": "de", 
-        "🇨🇦 Català": "ca", 
+        "🇪🇸 Español": "es",
+        "🇬🇧 English": "en",
+        "🇩🇪 Deutsch": "de",
+        "🇨🇦 Català": "ca",
         "🇫🇷 Français": "fr"
     }
-    
-    if "selected_lang" not in st.session_state:
-        st.session_state.selected_lang = "🇪🇸 Español"
 
-    selected_lang = st.session_state.selected_lang
+    # Obtener el idioma de los parámetros de la URL
+    query_params = st.query_params
+    if "lang" in query_params:
+        selected_lang = query_params["lang"]
+    else:
+        selected_lang = "es"  # Español por defecto
 
-    # Asegurar que el idioma seleccionado sea válido
-    if selected_lang not in lang_options:
-        selected_lang = "🇪🇸 Español"
-
-    def set_language(lang):
-        st.session_state.selected_lang = lang
-        st.rerun()  # Forzar la recarga para reflejar el cambio de inmediato
+    # Guardar el idioma en la sesión de Streamlit
+    st.session_state.selected_lang = selected_lang
 
     # CSS para los botones
     st.markdown(
@@ -75,17 +73,15 @@ def main():
         </style>
         <div class="lang-buttons">
         """ + "".join(
-            f"""<button class="lang-button {'selected' if lang_code == selected_lang else ''}" 
-                 onclick="window.location.href='?lang={lang_code}'">
+            f"""<a href="?lang={lang_code}" class="lang-button {'selected' if lang_code == selected_lang else ''}">
                  {flag} 
-                 </button>"""
+                 </a>"""
             for flag, lang_code in lang_options.items()
         ) + "</div>",
         unsafe_allow_html=True
     )
 
-    lang = lang_options[selected_lang]
-
+    # Mensajes en cada idioma
     messages = {
         "es": f"👋 Hola, hoy es {formatted_date}, el clima actual en 📍 {city} es {weather_info}.",
         "en": f"👋 Hello, today is {formatted_date}, the current weather in 📍 {city} is {weather_info}.",
@@ -94,6 +90,7 @@ def main():
         "fr": f"👋 Bonjour, aujourd'hui c'est {formatted_date}, le temps actuel à 📍 {city} est {weather_info}."
     }
 
+    # Renderizar el mensaje seleccionado
     with st.container():
         st.markdown(
             f"""
@@ -111,7 +108,7 @@ def main():
                     font-family: 'Arial', sans-serif;
                 }}
             </style>
-            <div class='header-container'>{messages[lang]}</div>
+            <div class='header-container'>{messages[selected_lang]}</div>
             """,
             unsafe_allow_html=True
         )
