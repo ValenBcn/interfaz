@@ -55,6 +55,7 @@ def main():
                 gap: 10px;
                 margin-bottom: 10px;
                 background-color: white;
+                color: black !important;
             }
             .lang-button {
                 background-color: white;
