@@ -38,6 +38,17 @@ current_month = datetime.datetime.now().month
 selected_year = current_year
 selected_month = list(calendar.month_name[1:])[current_month - 1]
 
+st.markdown("""
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+        
+        html, body, .stApp {
+            font-family: 'Open Sans', sans-serif !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 # **📌 Estilos CSS Mejorados**
 st.markdown(
     """
