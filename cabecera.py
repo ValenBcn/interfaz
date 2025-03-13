@@ -107,6 +107,7 @@ def main():
                     border-radius: 8px;
                     font-size: 14px;
                     font-family: 'Arial', sans-serif;
+                    margin-top: 0 !important; /* Elimina el margen superior */
                 }}
             </style>
             <div class='header-container'>{messages[lang]}</div>
