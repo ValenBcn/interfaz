@@ -54,6 +54,7 @@ def main():
                 justify-content: center;
                 gap: 10px;
                 margin-bottom: 10px;
+                background-color: white;
             }
             .lang-button {
                 background-color: white;
