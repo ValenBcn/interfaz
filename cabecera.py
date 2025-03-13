@@ -57,9 +57,9 @@ def main():
                 margin-bottom: 10px;
             }
             .lang-button {
-                background-color: white;
-                color: black;
-                border: none;
+                background-color: white;  !important;
+                color: black;  !important;
+                border: none;  !important;
                 padding: 8px 12px;
                 font-size: 14px;
                 cursor: pointer;
