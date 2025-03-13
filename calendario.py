@@ -6,15 +6,31 @@ import calendar
 # API para obtener los días festivos
 HOLIDAYS_API_URL = "https://date.nager.at/api/v3/PublicHolidays"
 
-# Diccionario de países y sus códigos
-COUNTRIES = {
-    "España": "ES",
-    "México": "MX",
-    "Francia": "FR",
-    "Alemania": "DE",
-    "Reino Unido": "GB",
-    "Estados Unidos": "US"
-}
+# Obtener ubicación del usuario automáticamente
+def get_user_location():
+    try:
+        ip_response = requests.get("https://ipapi.co/json/")
+        ip_data = ip_response.json()
+        country_code = ip_data.get("country_code", "ES")  # España por defecto
+        return country_code
+    except:
+        return "ES"  # España por defecto
+
+# Obtener el código del país según la ubicación
+def get_country_name(country_code):
+    country_map = {
+        "ES": "España",
+        "MX": "México",
+        "FR": "Francia",
+        "DE": "Alemania",
+        "GB": "Reino Unido",
+        "US": "Estados Unidos"
+    }
+    return country_map.get(country_code, "España")  # Si no está en la lista, usar España
+
+# Obtener el país automáticamente
+user_country_code = get_user_location()
+user_country = get_country_name(user_country_code)
 
 # Obtener el año y mes actual
 current_year = datetime.datetime.now().year
@@ -26,52 +42,12 @@ selected_month = list(calendar.month_name[1:])[current_month - 1]
 st.markdown(
     """
     <style>
-        /* Fondo general */
         .stApp {
             max-width: 100% !important;
             background-color: white !important;
             padding: 20px;
         }
 
-        /* Contenedor del filtro */
-        .filters-container {
-            background: #DCE8FF !important;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        /* Estilos del selectbox */
-        div[data-testid="stWidgetLabel"] label {
-            color: black !important;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        div[data-testid="stSelectbox"] {
-            background-color: #DCE8FF !important;
-            border-radius: 8px;
-        }
-
-        div[data-testid="stSelectbox"] div {
-            background-color: #DCE8FF !important;
-            color: black !important;
-        }
-
-        div[data-testid="stSelectbox"] select {
-            background-color: #DCE8FF !important;
-            color: black !important;
-            font-size: 14px;
-            padding: 10px;
-        }
-
-        div[data-testid="stSelectbox"] option {
-            background-color: #DCE8FF !important;
-            color: black !important;
-        }
-
-        /* Calendario */
         .calendar-title {
             font-size: 18px;
             font-weight: bold;
@@ -105,7 +81,6 @@ st.markdown(
             color: black !important;
         }
 
-        /* Contenedor de días festivos */
         .holidays-container {
             background: #f8f9fa;
             padding: 10px;
@@ -126,22 +101,13 @@ st.markdown(
             color: black !important;
             padding: 3px 0;
         }
-
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# **📌 Contenedor de filtro de país**
-#st.markdown('<div class="filters-container">', unsafe_allow_html=True)
-country = st.selectbox("🌍 País", list(COUNTRIES.keys()), index=0)
-st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor del filtro
-
-# Obtener el código del país seleccionado
-country_code = COUNTRIES[country]
-
 # Obtener los días festivos del año seleccionado
-response = requests.get(f"{HOLIDAYS_API_URL}/{selected_year}/{country_code}")
+response = requests.get(f"{HOLIDAYS_API_URL}/{selected_year}/{user_country_code}")
 holidays = response.json() if response.status_code == 200 else []
 
 # Filtrar días festivos por mes seleccionado
@@ -183,7 +149,7 @@ st.markdown(table, unsafe_allow_html=True)
 
 # **📌 Días festivos del mes seleccionado**
 st.markdown('<div class="holidays-container">', unsafe_allow_html=True)
-st.markdown(f'<div class="holidays-title">📌 Días festivos en {country}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="holidays-title">📌 Días festivos en {user_country}</div>', unsafe_allow_html=True)
 
 if holidays_by_month:
     for h in holidays_by_month:
@@ -191,4 +157,4 @@ if holidays_by_month:
 else:
     st.markdown('<div class="holiday-item">No hay días festivos en este mes.</div>', unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)  # Cierra el contenedor de días festivos
+st.markdown('</div>', unsafe_allow_html=True)
