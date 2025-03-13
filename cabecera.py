@@ -33,7 +33,7 @@ def main():
     }
     
     selected_lang = st.radio("", list(lang_options.keys()), horizontal=True, key="lang_selector")
-    #lang = lang_options[selected_lang]
+    lang = lang_options[selected_lang]
     
     messages = {
         "es": f"👋 Hola, hoy es {formatted_date}, el clima actual en 📍 {city} es {weather_info}.",
@@ -68,6 +68,7 @@ def main():
                     margin: 0 10px;
                     font-size: 14px;
                     cursor: pointer;
+                    font-color: black;
                 }}
             </style>
             <div class='lang-buttons'>
