@@ -100,7 +100,7 @@ def main():
                     color: white;
                     padding: 15px;
                     border-radius: 8px;
-                    font-size: 18px;
+                    font-size: 10px;
                     font-family: 'Arial', sans-serif;
                     width: calc(100% - 40px);
                     margin: auto;
