@@ -48,7 +48,7 @@ def main():
             f"""
             <style>
                 .header-container {{
-                    background-color: #3B81F6;
+                    background-color: white;
                     color: #f7f8ff;
                     text-align: center;
                     padding: 8px 15px;
