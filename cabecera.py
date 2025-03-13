@@ -38,6 +38,15 @@ def main():
         st.session_state.selected_lang = "es"  # Español por defecto
 
     selected_lang = st.session_state.selected_lang
+    st.markdown("""
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+        
+            html, body, .stApp {
+                font-family: 'Open Sans', sans-serif !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
     # CSS para los botones
     st.markdown(
