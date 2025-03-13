@@ -28,7 +28,7 @@ def main():
         "🇪🇸 Español": "es", 
         "🇬🇧 English": "en", 
         "🇩🇪 Deutsch": "de", 
-        "🇨🇦 Català": "ca", 
+        "<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Flag_of_Catalonia.svg/40px-Flag_of_Catalonia.svg.png' width='20'> Català": "ca",
         "🇫🇷 Français": "fr"
     }
     
